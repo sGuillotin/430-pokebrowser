@@ -78,6 +78,8 @@
       handleResponse(response, method !== 'HEAD');
     };
 
+    // adds event listeners to buttons
+    // prevents default behavior
     const init = () => {
       const nameForm = document.querySelector('#nameForm');
       const userForm = document.querySelector('#userForm');
