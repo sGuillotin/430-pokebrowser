@@ -1,0 +1,27 @@
+{
+  "name": "http-api-assignment-ii",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/sGuillotin/http-api-assignment-ii#readme",
+  "bugs": {
+    "url": "https://github.com/sGuillotin/http-api-assignment-ii/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sGuillotin/http-api-assignment-ii.git"
+  },
+  "license": "ISC",
+  "author": "SFG",
+  "type": "commonjs",
+  "main": "eslint.config.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests Complete\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0"
+  }
+}
