@@ -6,29 +6,33 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
 
   <script>
+    // use this for response box setting, handling post/get/head
     const handleResponse = async (response, parseJSON) => {
       const content = document.querySelector('#content');
 
-      switch (response.status) {
-        case 200:
-          content.innerHTML = '<b>Success</b>';
-          break;
-        case 201:
-          content.innerHTML = '<b>Created</b>';
-          break;
-        case 204:
-          content.innerHTML = '<b>Updated (No Content)</b>';
-          return;
-        case 400:
-          content.innerHTML = '<b>Bad Request</b>';
-          break;
-        case 404:
-          content.innerHTML = '<b>Not Found</b>';
-          break;
-        default:
-          content.innerHTML = 'Error code not implemented by client.';
-          break;
-      }
+      // switch (response.status) {
+      //   case 200:
+      //     content.innerHTML = '<b>Success</b>';
+      //     break;
+      //   case 201:
+      //     content.innerHTML = '<b>Created</b>';
+      //     break;
+      //   case 204:
+      //     content.innerHTML = '<b>Updated (No Content)</b>';
+      //     return;
+      //   case 400:
+      //     content.innerHTML = '<b>Bad Request</b>';
+      //     break;
+      //   case 404:
+      //     content.innerHTML = '<b>Not Found</b>';
+      //     break;
+      //   default:
+      //     content.innerHTML = 'Error code not implemented by client.';
+      //     break;
+      // }
+
+
+      // manage head/get, post here
 
       // HEAD responses have no body, so don't try to parse them.
       if (!parseJSON) return;
@@ -46,7 +50,7 @@
     // POST from the "Add User" form
     const sendPost = async (nameForm) => {
       const url = nameForm.getAttribute('action');
-      const method = nameForm.getAttribute('method');
+      const method = nameForm.getAttribute('method'); // PIN this is setting the METHOD!
 
       const name = nameForm.querySelector('#nameField').value;
       const age = nameForm.querySelector('#ageField').value;
@@ -79,7 +83,7 @@
     };
 
     // adds event listeners to buttons
-    // prevents default behavior
+    // prevents default behavior using .preventDefault()
     const init = () => {
       const nameForm = document.querySelector('#nameForm');
       const userForm = document.querySelector('#userForm');

@@ -10,12 +10,13 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 const getStruct = {
   '/': htmlHandler.getIndex,
   '/style.css': htmlHandler.getCSS,
-  '/getUsers': jsonHandler.getUsers,
+  '/getAllPokemon': jsonHandler.getAllPokemon,
+  '/getPokemonNames': jsonHandler.getPokemonNames,
   notFound: jsonHandler.notFound,
 };
 
 const postStruct = {
-  '/addUser': (request, response) => parseBody(request, response, jsonHandler.addUser),
+  '/addPokemon': (request, response) => parseBody(request, response, jsonHandler.addPokemon),
   notFound: jsonHandler.notFound,
 };
 

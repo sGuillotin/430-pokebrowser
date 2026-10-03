@@ -1,11 +1,10 @@
 // In-memory data store: cleared when Node restarts
+// pokemon is like our const users = {};
 // PUT POKEDEX HERE!!
 const fs = require('fs');   // import filesystems module
 const pokemon = JSON.parse(fs.readFileSync(`${__dirname}/../data/pokedex.json`));
+// console.log("pokemon", pokemon);
 
-console.log("pokemon", pokemon);
-
-const users = {};
 
 // Sends a JSON response. HEAD requests and 204 responses get no body.
 const respondJSON = (request, response, status, object) => {
@@ -23,12 +22,7 @@ const respondJSON = (request, response, status, object) => {
 };
 
 
-
-
-const getUsers = (request, response) => {
-  respondJSON(request, response, 200, { users });
-};
-
+// ----------- Errors --------------------------------
 const notFound = (request, response) => {
   respondJSON(request, response, 404, {
     message: 'The resource you are looking for was not found.',
@@ -44,7 +38,28 @@ const badJSON = (request, response) => {
   });
 };
 
-const addUser = (request, response) => {
+
+// ----------- Endpoints -----------------------------
+const getAllPokemon = (request, response) => {
+  respondJSON(request, response, 200, { pokemon });
+};
+
+
+const getPokemonNames = (request, response) => {
+  // how to check for queryparams if they come in via client form? pass via client?
+  // TODO filtering next
+  // console.log(Object.values(pokemon).filter(entry => entry));
+  console.log(pokemon.filter(entry => entry.name)); // everything with a name
+  console.log(pokemon.filter(entry.name)); // error
+
+  respondJSON(request, response, 200, { pokemon });
+};
+
+
+
+const addPokemon = (request, response) => {
+  return(request, response, 501, { message: "this method is not yet available. please return soon to create your own pokemon." });
+
   const { name, age } = request.body;
 
   const missingName = !name;
@@ -53,7 +68,7 @@ const addUser = (request, response) => {
   if (missingName || missingAge) {
     return respondJSON(request, response, 400, {
       message: 'Name and age are both required.',
-      id: 'addUserMissingParams',
+      id: 'addPokemonMissingParams',
     });
   }
 
@@ -76,8 +91,10 @@ const addUser = (request, response) => {
 
 
 module.exports = {
-  getUsers,
   notFound,
   badJSON,
-  addUser
+  getAllPokemon,
+  getPokemonNames,
+
+  addPokemon
 };
