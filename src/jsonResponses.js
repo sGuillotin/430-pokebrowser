@@ -1,5 +1,10 @@
 // In-memory data store: cleared when Node restarts
 // PUT POKEDEX HERE!!
+const fs = require('fs');   // import filesystems module
+const pokemon = JSON.parse(fs.readFileSync(`${__dirname}/../data/pokedex.json`));
+
+console.log("pokemon", pokemon);
+
 const users = {};
 
 // Sends a JSON response. HEAD requests and 204 responses get no body.
@@ -26,7 +31,7 @@ const getUsers = (request, response) => {
 
 const notFound = (request, response) => {
   respondJSON(request, response, 404, {
-    message: 'The page you are looking for was not found.',
+    message: 'The resource you are looking for was not found.',
     id: 'notFound',
   });
 };
@@ -34,7 +39,7 @@ const notFound = (request, response) => {
 
 const badJSON = (request, response) => {
   respondJSON(request, response, 400, {
-    message: 'Request body was missing or in an invalid format.',
+    message: 'Request body part(s) were missing or in an invalid format.',
     id: 'invalidDataFormat',
   });
 };

@@ -21,23 +21,27 @@ const postStruct = {
 
 
 
-// Reassembles a (possibly chunked) request body, parses it, then calls handler.
+// takes in a request body, parses it, then calls handler provided
 const parseBody = (request, response, handler) => {
   // The request will come in in pieces. We will store those pieces in this body array.
   const body = [];
 
+  // if we have error
   request.on('error', (err) => {
     console.dir(err);
     response.statusCode = 400;
     response.end();
   });
 
+  // if we have data
   request.on('data', (chunk) => {
     body.push(chunk);
   });
 
+  // at end of request
   request.on('end', () => {
     const bodyString = Buffer.concat(body).toString();
+    // parse body based on Content-Type of POST request
     const type = request.headers['content-type'];
 
     if (type === 'application/x-www-form-urlencoded') {
@@ -71,6 +75,7 @@ const onRequest = (request, response) => {
   // console.log(request.headers);
   // console.log(request.headers.accept);
 
+  // GET, HEAD, or POST?
   let struct;
   if (request.method === 'GET' || request.method === 'HEAD') {
     struct = getStruct;
@@ -80,9 +85,12 @@ const onRequest = (request, response) => {
     return jsonHandler.notFound(request, response);
   }
 
+  // if the endpoint exists in our struct menu of options,
   if (struct[parsedUrl.pathname]) {
+    // serve to client
     return struct[parsedUrl.pathname](request, response);
   }
+  // otherwise return notFound (404)
   return struct.notFound(request, response);
 
   // console.log(request.url);
