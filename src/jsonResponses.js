@@ -55,38 +55,37 @@ const getPokemonNames = (request, response) => {
   // how to check for queryparams if they come in via client form? pass via client?
   //   - (how to handle request.body?)
   // Object.values is redundant, .entries() and .keys() do not work
+  // .includes`"${request.query.type}"` is repetitive :)
 
-  // console.log(Object.values(pokemon).map(p => p.name));
-  const allNames = pokemon.map(p => p.name);
-  console.log(allNames);
-
-  // if(request.query.valid === "true") -- API1 sample
-
+  
   // check for bad data?
   // guiding comment w regex for weaknesses list?
+  // set type filter to all as default value?
 
   // 1 - filter the data
   // 2 - return names
+  
+  let result;
 
-  // set type filter to all as default value
-  // if(!request.query.type){
-  //   request.query.type = "";
-  // }
+  if (!request.query.type) {
+    result = pokemon
+      .map(p => p.name)
+    ;
+  } else {
+    result = pokemon
+      // type
+      // .filter(p => p.type.includes("Fire")) // works
+      // .filter(p => p.type.includes(`${request.query.type}`)) // enter as ?type=Fire
+      .filter(p => p.type.includes(request.query.type)) // enter as ?type=Fire
 
-  const result = pokemon
-    // type
-    // .filter(p => p.type.includes("Fire")) // works
-    // .filter(p => p.type.includes(`${request.query.type}`)) // can't read properties of undefined
-    // why is request.query undefined?????? TODO explore
-    
-    // weaknesses
-    // .filter(p => p.weaknesses.includes(`${request.query.weaknesses}`))
-    
-    // return names only
-    // .map(p => `name: ${p.name},/ntype: ${p.type},/nweaknesses: ${p.weaknesses}`)
-    .map(p => p.name)
-  ;
-    
+      // weaknesses
+      // .filter(p => p.weaknesses.includes(`${request.query.weaknesses}`))
+
+      // return names only
+      // .map(p => `name: ${p.name},/ntype: ${p.type},/nweaknesses: ${p.weaknesses}`)
+      .map(p => p.name)
+    ;
+  }
 
   respondJSON(request, response, 200, {
     status: 200,
@@ -97,6 +96,9 @@ const getPokemonNames = (request, response) => {
 
 // search all
 const searchAllPokemon = (request, response) => {
+
+  console.log(request.query);
+
   return(request, response, 200, {
     sorry: "this method is not yet available. please return soon!",
     id: "notImplemented"
@@ -145,7 +147,7 @@ const addPokemon = (request, response) => {
     return respondJSON(request, response, 201, { message: 'Created Successfully' });
   }
 
-  return respondJSON(request, response, 204, {});
+  return respondJSON(request, response, 204, {}); // successful, no response
   */
 };
 

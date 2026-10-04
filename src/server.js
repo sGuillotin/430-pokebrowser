@@ -79,6 +79,9 @@ const onRequest = (request, response) => {
   // console.log(request.headers);
   // console.log(request.headers.accept);
 
+  // connect the request.query part
+  request.query = Object.fromEntries(parsedUrl.searchParams);
+
   // GET, HEAD, or POST?
   let struct;
   if (request.method === 'GET' || request.method === 'HEAD') {
