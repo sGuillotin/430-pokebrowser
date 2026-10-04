@@ -17,11 +17,15 @@
   "scripts": {
     "start": "node ./src/server.js",
     "pretest": "eslint ./src --fix",
-    "test": "echo \"Tests Complete\""
+    "test": "echo \"Tests Complete\"",
+    "nodemon": "nodemon -e js,html,css --watch ./src --watch ./client"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.11.0",
     "globals": "^17.13.0"
+  },
+  "dependencies": {
+    "nodemon": "^3.1.14"
   }
 }

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Pokemon API</title>
+  <title>The Pokebrowser</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
 
   <script>
@@ -80,6 +80,8 @@
       });
 
       handleResponse(response, method !== 'HEAD');
+
+      // btw try and send these using request.query instead of request.body - is that possible? how do I handle .body?
     };
 
     // adds event listeners to buttons
@@ -107,10 +109,10 @@
 
 <body>
   <section id="top">
-    <h1>Pokemon API</h1>
+    <h1>Pokemon API Browser</h1>
     <br>
     <h2>Project Status</h2>
-    <p><b>Overall status:</b> implementing endpoints and studying project requirements</p>
+    <p><b>Overall status:</b> implementing endpoints and writing documentation</p>
     <br>
     <h2>Milestone progress</h2>
     <p>Endpoints are: <b>in progress!</b></p>
@@ -120,6 +122,16 @@
     <p>This page is: <b>waiting</b></p>
     <p>Final Documentation page is: <b>waiting</b></p>
     <p>CSS styling is: <b>waiting</b></p>
+    <br>
+    <h3>Endpoints open for business:</h3>
+    <p>/</p>
+    <p>/style.css</p>
+    <p>/getAllPokemon</p>
+    <p>/getPokemonNames - filtering options coming soon</p>
+    <p>/searchAllPokemon</p>
+    <p>/searchSinglePokemon</p>
+    <p>/addPokemon - coming soon</p>
+    <p>/modifyPokemon - coming soon</p>
 
     <!--
     <form id="nameForm" action="/addUser" method="post">

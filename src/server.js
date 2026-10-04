@@ -12,11 +12,14 @@ const getStruct = {
   '/style.css': htmlHandler.getCSS,
   '/getAllPokemon': jsonHandler.getAllPokemon,
   '/getPokemonNames': jsonHandler.getPokemonNames,
+  '/searchAllPokemon': jsonHandler.searchAllPokemon,
+  '/searchSinglePokemon': jsonHandler.searchSinglePokemon,
   notFound: jsonHandler.notFound,
 };
 
 const postStruct = {
   '/addPokemon': (request, response) => parseBody(request, response, jsonHandler.addPokemon),
+  '/modifyPokemon': (request, response) => parseBody(request, response, jsonHandler.modifyPokemon),
   notFound: jsonHandler.notFound,
 };
 

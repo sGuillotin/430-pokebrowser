@@ -25,6 +25,7 @@ const respondJSON = (request, response, status, object) => {
 // ----------- Errors --------------------------------
 const notFound = (request, response) => {
   respondJSON(request, response, 404, {
+    status: 404,
     message: 'The resource you are looking for was not found.',
     id: 'notFound',
   });
@@ -33,6 +34,7 @@ const notFound = (request, response) => {
 
 const badJSON = (request, response) => {
   respondJSON(request, response, 400, {
+    status: 400,
     message: 'Request body part(s) were missing or in an invalid format.',
     id: 'invalidDataFormat',
   });
@@ -41,25 +43,83 @@ const badJSON = (request, response) => {
 
 // ----------- Endpoints -----------------------------
 const getAllPokemon = (request, response) => {
-  respondJSON(request, response, 200, { pokemon });
+  respondJSON(request, response, 200, {
+    status: 200,
+    'Content-Length': Buffer.byteLength(JSON.stringify(pokemon), 'utf8'),
+    pokemon
+  });
 };
 
-
+// get names only
 const getPokemonNames = (request, response) => {
   // how to check for queryparams if they come in via client form? pass via client?
-  // TODO filtering next
-  // console.log(Object.values(pokemon).filter(entry => entry));
-  console.log(pokemon.filter(entry => entry.name)); // everything with a name
-  console.log(pokemon.filter(entry.name)); // error
+  //   - (how to handle request.body?)
+  // Object.values is redundant, .entries() and .keys() do not work
 
-  respondJSON(request, response, 200, { pokemon });
+  // console.log(Object.values(pokemon).map(p => p.name));
+  const allNames = pokemon.map(p => p.name);
+  console.log(allNames);
+
+  // if(request.query.valid === "true") -- API1 sample
+
+  // check for bad data?
+  // guiding comment w regex for weaknesses list?
+
+  // 1 - filter the data
+  // 2 - return names
+
+  // set type filter to all as default value
+  // if(!request.query.type){
+  //   request.query.type = "";
+  // }
+
+  const result = pokemon
+    // type
+    // .filter(p => p.type.includes("Fire")) // works
+    // .filter(p => p.type.includes(`${request.query.type}`)) // can't read properties of undefined
+    // why is request.query undefined?????? TODO explore
+    
+    // weaknesses
+    // .filter(p => p.weaknesses.includes(`${request.query.weaknesses}`))
+    
+    // return names only
+    // .map(p => `name: ${p.name},/ntype: ${p.type},/nweaknesses: ${p.weaknesses}`)
+    .map(p => p.name)
+  ;
+    
+
+  respondJSON(request, response, 200, {
+    status: 200,
+    'Content-Length': Buffer.byteLength(JSON.stringify(result), 'utf8'),
+    result
+  });
+};
+
+// search all
+const searchAllPokemon = (request, response) => {
+  return(request, response, 200, {
+    sorry: "this method is not yet available. please return soon!",
+    id: "notImplemented"
+   });
+};
+
+// search single
+const searchSinglePokemon = (request, response) => {
+  return(request, response, 501, {
+    sorry: "this method is not yet available. please return soon!",
+    id: "notImplemented"
+   });
 };
 
 
-
+// ---------- POST requests --------------------------
 const addPokemon = (request, response) => {
-  return(request, response, 501, { message: "this method is not yet available. please return soon to create your own pokemon." });
+  return(request, response, 501, {
+    sorry: "this method is not yet available. please return soon to create your own pokemon.",
+    id: "notImplemented"
+  });
 
+  /*
   const { name, age } = request.body;
 
   const missingName = !name;
@@ -86,15 +146,26 @@ const addPokemon = (request, response) => {
   }
 
   return respondJSON(request, response, 204, {});
+  */
 };
 
+// modify by name
+const modifyPokemon = (request, response) => {
+  return(request, response, 501, {
+    sorry: "this method is not yet available. please return soon!",
+    id: "notImplemented"
+  });
 
+  // post request idk pokemon[request.name] = { request.body }
+};
 
 module.exports = {
   notFound,
   badJSON,
   getAllPokemon,
   getPokemonNames,
-
-  addPokemon
+  searchAllPokemon,
+  searchSinglePokemon,
+  addPokemon,
+  modifyPokemon
 };
