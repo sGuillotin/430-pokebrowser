@@ -99,24 +99,46 @@ const searchAllPokemon = (request, response) => {
 
   console.log(request.query);
 
-  return(request, response, 200, {
+  respondJSON(request, response, 200, {
     sorry: "this method is not yet available. please return soon!",
     id: "notImplemented"
    });
 };
 
-// search single
+// search single pokemon by name
+// respond with full object
 const searchSinglePokemon = (request, response) => {
-  return(request, response, 501, {
+  respondJSON(request, response, 501, {
     sorry: "this method is not yet available. please return soon!",
     id: "notImplemented"
    });
+
+
+
+  if (!request.query.name) {
+    // return 400, no name provided!
+    respondJSON(request, response, 400, {
+      sorry: "Please enter a name.",
+      id: "noName"
+    });
+  } else {
+    // search by name for full pokemon object
+    const result = pokemon
+      .filter(p => p.name === request.query.name);
+  }
+
+  respondJSON(request, response, 200, {
+    status: 200,
+    'Content-Length': Buffer.byteLength(JSON.stringify(result), 'utf8'),
+    result
+  });
+
 };
 
 
 // ---------- POST requests --------------------------
 const addPokemon = (request, response) => {
-  return(request, response, 501, {
+  respondJSON(request, response, 501, {
     sorry: "this method is not yet available. please return soon to create your own pokemon.",
     id: "notImplemented"
   });
@@ -153,7 +175,7 @@ const addPokemon = (request, response) => {
 
 // modify by name
 const modifyPokemon = (request, response) => {
-  return(request, response, 501, {
+  respondJSON(request, response, 501, {
     sorry: "this method is not yet available. please return soon!",
     id: "notImplemented"
   });
