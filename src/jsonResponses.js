@@ -42,6 +42,9 @@ const badJSON = (request, response) => {
 
 
 // ----------- Endpoints -----------------------------
+// get all pokemon
+// full objects
+// no filtering
 const getAllPokemon = (request, response) => {
   respondJSON(request, response, 200, {
     status: 200,
@@ -50,21 +53,22 @@ const getAllPokemon = (request, response) => {
   });
 };
 
-// get names only
+// get pokemon names only
+// filter by type, weaknesses
 const getPokemonNames = (request, response) => {
   // how to check for queryparams if they come in via client form? pass via client?
   //   - (how to handle request.body?)
   // Object.values is redundant, .entries() and .keys() do not work
   // .includes`"${request.query.type}"` is repetitive :)
 
-  
+
   // check for bad data?
   // guiding comment w regex for weaknesses list?
   // set type filter to all as default value?
 
   // 1 - filter the data
   // 2 - return names
-  
+
   let result;
 
   if (!request.query.type) {
@@ -94,36 +98,31 @@ const getPokemonNames = (request, response) => {
   });
 };
 
-// search all
+// search all pokemon
+// sends full objects
+// filter by type, weaknesses
 const searchAllPokemon = (request, response) => {
-
-  console.log(request.query);
-
   respondJSON(request, response, 200, {
     sorry: "this method is not yet available. please return soon!",
     id: "notImplemented"
-   });
+  });
 };
 
 // search single pokemon by name
 // respond with full object
 const searchSinglePokemon = (request, response) => {
-  respondJSON(request, response, 501, {
-    sorry: "this method is not yet available. please return soon!",
-    id: "notImplemented"
-   });
 
-
+  let result;
 
   if (!request.query.name) {
     // return 400, no name provided!
     respondJSON(request, response, 400, {
-      sorry: "Please enter a name.",
+      error: "Please enter a name.",
       id: "noName"
     });
   } else {
     // search by name for full pokemon object
-    const result = pokemon
+    result = pokemon
       .filter(p => p.name === request.query.name);
   }
 
@@ -132,7 +131,6 @@ const searchSinglePokemon = (request, response) => {
     'Content-Length': Buffer.byteLength(JSON.stringify(result), 'utf8'),
     result
   });
-
 };
 
 
