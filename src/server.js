@@ -37,7 +37,7 @@ const parseBody = (request, response, handler) => {
     response.end();
   });
 
-  // if we have data
+  // if we have data, add it to const body
   request.on('data', (chunk) => {
     body.push(chunk);
   });

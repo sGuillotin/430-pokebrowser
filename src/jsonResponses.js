@@ -69,27 +69,34 @@ const getPokemonNames = (request, response) => {
   // 1 - filter the data
   // 2 - return names
 
-  let result;
+  let result = pokemon.filter(p => p); // shallow copy pokemon
 
-  if (!request.query.type) {
+  if (!request.query.type && !request.query.weakness) {
     result = pokemon
       .map(p => p.name)
     ;
   } else {
-    result = pokemon
+    result = pokemon;
       // type
       // .filter(p => p.type.includes("Fire")) // works
-      // .filter(p => p.type.includes(`${request.query.type}`)) // enter as ?type=Fire
-      .filter(p => p.type.includes(request.query.type)) // enter as ?type=Fire
+      if(request.query.type){
+        result = result.filter(p => p.type.includes(request.query.type));
+        // enter as ?type=Fire
+        console.log("type filtered");
+      }
 
-      // weaknesses
-      // .filter(p => p.weaknesses.includes(`${request.query.weaknesses}`))
+      // weakness
+      if(request.query.weakness){
+        result = result.filter(p => p.weaknesses.includes(request.query.weakness));
+        // &?weakness=Water
+        console.log("weakness filtered");
+      }
 
       // return names only
-      // .map(p => `name: ${p.name},/ntype: ${p.type},/nweaknesses: ${p.weaknesses}`)
-      .map(p => p.name)
-    ;
+      result = result.map(p => p.name);
   }
+
+  // console.log(pokemon);
 
   respondJSON(request, response, 200, {
     status: 200,
