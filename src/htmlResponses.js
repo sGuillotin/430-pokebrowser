@@ -1,6 +1,7 @@
 const fs = require('fs');   // import filesystems module
 
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
+const docs = fs.readFileSync(`${__dirname}/../client/docs.html`);
 const css = fs.readFileSync(`${__dirname}/../client/style.css`);
 
 /**
@@ -20,9 +21,11 @@ const serveFile = (request, response, content, mimeType) => {
 };
 
 const getIndex = (request, response) => serveFile(request, response, index, 'text/html');
+const getDocs = (request, response) => serveFile(request, response, docs, 'text/html');
 const getCSS = (request, response) => serveFile(request, response, css, 'text/css');
 
 module.exports = {
     getIndex,
+    getDocs,
     getCSS
 }

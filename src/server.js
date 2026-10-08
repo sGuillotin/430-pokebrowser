@@ -9,6 +9,7 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 // GET and HEAD share the same routes. The json handler skips the body for HEAD.
 const getStruct = {
   '/': htmlHandler.getIndex,
+  '/docs': htmlHandler.getDocs,
   '/style.css': htmlHandler.getCSS,
   '/getAllPokemon': jsonHandler.getAllPokemon,
   '/getPokemonNames': jsonHandler.getPokemonNames,

@@ -34,7 +34,9 @@
       // }
 
 
-      // manage head/get, post here
+      // manage head/get, post here - not so sure about that anymore
+      // display your results here - set result.innerHTML
+
 
       // HEAD responses have no body, so don't try to parse them.
       if (!parseJSON) return;
@@ -75,6 +77,7 @@
     const requestUpdate = async (userForm) => {
       const url = userForm.querySelector('#urlField').value;
       const method = userForm.querySelector('#methodSelect').value.toUpperCase();
+      // make method a GET HEAD radio select
 
       const response = await fetch(url, {
         method,
@@ -113,28 +116,34 @@
   <section id="top">
     <h1>Pokemon API Browser</h1>
     <p><i>Gen 1 Pokedex</i></p>
+    <a href="docs">Read the Documentation</a>
     <br>
-    <h2>Project Status</h2>
-    <p><b>Overall status:</b> implementing endpoints and writing documentation</p>
     <br>
-    <h2>Milestone progress</h2>
-    <p>Endpoints are: <b>in progress!</b></p>
-    <p>Documentation page is: <b>in progress!</b></p>
-    <br>
-    <p>Server code is: <b>waiting</b></p>
-    <p>This page is: <b>waiting</b></p>
-    <p>Final Documentation page is: <b>waiting</b></p>
-    <p>CSS styling is: <b>waiting</b></p>
-    <br>
-    <h3>Endpoints open for business:</h3>
-    <p>/</p>
-    <p>/style.css</p>
+    <section>
+      <h3>/getAllPokemon</h3>
+      <form id="getAllPokemonForm">
+        <!-- 
+        <input type="radio" id="get" name="methodSelect" value="GET" checked>
+        <label for="get">GET</label>
+        <input type="radio" id="head" name="methodSelect" value="HEAD">
+        <label for="head">HEAD</label>
+        <button type="submit">Go</button>
+        -->
+
+      <select id="methodSelect">
+        <option value="get">GET</option>
+        <label><input type="radio" name="methodSelect" value="get" checked>GET</label>
+      </select>
+      <input type="submit" value="Get User"/>
+
+      </form>
+    </section>
     <p>/getAllPokemon</p>
-    <p>/getPokemonNames - filtering options coming soon</p>
+    <p>/getPokemonNames</p>
     <p>/searchAllPokemon</p>
     <p>/searchSinglePokemon</p>
-    <p>/addPokemon - coming soon</p>
-    <p>/modifyPokemon - coming soon</p>
+    <p>/addPokemon</p>
+    <p>/modifyPokemon</p>
 
     <!--
     <form id="nameForm" action="/addUser" method="post">

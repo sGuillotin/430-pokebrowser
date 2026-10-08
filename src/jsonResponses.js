@@ -4,6 +4,8 @@
 const fs = require('fs');   // import filesystems module
 const pokemon = JSON.parse(fs.readFileSync(`${__dirname}/../data/pokedex.json`));
 // console.log("pokemon", pokemon);
+// regex for negating filters - may or may not use outside getPokemonNames
+const startsWithNot = /^!/;
 
 
 // Sends a JSON response. HEAD requests and 204 responses get no body.
@@ -82,14 +84,18 @@ const getPokemonNames = (request, response) => {
       if(request.query.type){
         result = result.filter(p => p.type.includes(request.query.type));
         // enter as ?type=Fire
+        // make case-insensitive using regex?
         console.log("type filtered");
       }
 
       // weakness
       if(request.query.weakness){
         result = result.filter(p => p.weaknesses.includes(request.query.weakness));
-        // &?weakness=Water
-        console.log("weakness filtered");
+        // &weakness=Water
+        console.log(`${request.query.weakness} weakness filtered`);
+      } else if(startsWithNot.test(request.query.weakness)){
+        result = result.filter(p => !p.weaknesses.includes(request.query.weakness));
+        console.log("!weakness filtered");
       }
 
       // return names only
