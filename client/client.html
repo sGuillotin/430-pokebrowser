@@ -122,22 +122,17 @@
     <section>
       <h3>/getAllPokemon</h3>
       <form id="getAllPokemonForm">
-        <!-- 
-        <input type="radio" id="get" name="methodSelect" value="GET" checked>
-        <label for="get">GET</label>
-        <input type="radio" id="head" name="methodSelect" value="HEAD">
-        <label for="head">HEAD</label>
-        <button type="submit">Go</button>
-        -->
-
-      <select id="methodSelect">
-        <option value="get">GET</option>
-        <label><input type="radio" name="methodSelect" value="get" checked>GET</label>
-      </select>
-      <input type="submit" value="Get User"/>
-
+        <input type="radio" id="get" name="methodSelect" value="GET" checked/>
+          <label for="get">GET</label>
+        <input type="radio" id="head" name="methodSelect" value="HEAD"/>
+          <label for="head">HEAD</label>
+        <button type="submit" style="margin-left: 15px;">Go</button><br>
+        <input type="text" id="result" style="margin-top: 15px;" readonly/>
+        <!-- difference from  <input type="submit" value="Get User"/>  ??  -->
+        <!-- purpose of select tag wrapping? -->
       </form>
     </section>
+
     <p>/getAllPokemon</p>
     <p>/getPokemonNames</p>
     <p>/searchAllPokemon</p>

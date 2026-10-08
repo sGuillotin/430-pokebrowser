@@ -3,6 +3,7 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
+  font-size: 125%;  /* default 16px */
 }
 
 #top {
@@ -18,4 +19,32 @@ html, body {
   margin-top: 100px;
   font-size: 2em;
   text-align: center;
+}
+
+
+
+/* scale standard buttons */
+button, 
+.button-class {
+  font-size: 1rem; /* inherits updated root font sizes */
+  padding: 0.2em 0.5em; /* vert-hor; em makes padding scale w text */
+  border-radius: 5px; /* accidentally made a weird little outline thing */
+}
+
+/* radio button labels - and other labels maybe */
+label {
+  font-size: 1rem;
+}
+
+/* all inputs - incl text output box (readonly input) */
+input {
+  height: 1.25rem;
+  border-radius: 5px; /* accidentally made a weird little outline thing */
+}
+
+/* actual radio circle size */
+input[type="radio"] {
+  width: 1rem;
+  height: 1rem;
+  vertical-align: middle; /* keep circle aligned with text */
 }
