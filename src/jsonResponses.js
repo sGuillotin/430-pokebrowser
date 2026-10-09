@@ -45,13 +45,23 @@ const badJSON = (request, response) => {
 
 // ----------- Endpoints -----------------------------
 // get all pokemon
-// full objects
+// full objects - tweaked
 // no filtering
 const getAllPokemon = (request, response) => {
+  const result = pokemon
+  .map(p => ({
+    name: p.name,
+    id: p.id,
+    type: p.type,
+    weaknesses: p.weaknesses,
+    height: p.height,
+    weight: p.weight,
+  }));
+
   respondJSON(request, response, 200, {
     status: 200,
-    'Content-Length': Buffer.byteLength(JSON.stringify(pokemon), 'utf8'),
-    pokemon
+    contentLength: Buffer.byteLength(JSON.stringify(pokemon), 'utf8'),
+    message: result
   });
 };
 
@@ -106,8 +116,8 @@ const getPokemonNames = (request, response) => {
 
   respondJSON(request, response, 200, {
     status: 200,
-    'Content-Length': Buffer.byteLength(JSON.stringify(result), 'utf8'),
-    result
+    contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
+    message: result
   });
 };
 
@@ -116,7 +126,7 @@ const getPokemonNames = (request, response) => {
 // filter by type, weaknesses
 const searchAllPokemon = (request, response) => {
   respondJSON(request, response, 200, {
-    sorry: "this method is not yet available. please return soon!",
+    message: "sorry, this method is not yet available. please return soon!",
     id: "notImplemented"
   });
 };
@@ -130,7 +140,7 @@ const searchSinglePokemon = (request, response) => {
   if (!request.query.name) {
     // return 400, no name provided!
     respondJSON(request, response, 400, {
-      error: "Please enter a name.",
+      message: "Please enter a name.",
       id: "noName"
     });
   } else {
@@ -141,8 +151,8 @@ const searchSinglePokemon = (request, response) => {
 
   respondJSON(request, response, 200, {
     status: 200,
-    'Content-Length': Buffer.byteLength(JSON.stringify(result), 'utf8'),
-    result
+    contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
+    message: result
   });
 };
 
@@ -150,7 +160,7 @@ const searchSinglePokemon = (request, response) => {
 // ---------- POST requests --------------------------
 const addPokemon = (request, response) => {
   respondJSON(request, response, 501, {
-    sorry: "this method is not yet available. please return soon to create your own pokemon.",
+    message: "this method is not yet available. please return soon to create your own pokemon.",
     id: "notImplemented"
   });
 
@@ -187,7 +197,7 @@ const addPokemon = (request, response) => {
 // modify by name
 const modifyPokemon = (request, response) => {
   respondJSON(request, response, 501, {
-    sorry: "this method is not yet available. please return soon!",
+    message: "this method is not yet available. please return soon!",
     id: "notImplemented"
   });
 

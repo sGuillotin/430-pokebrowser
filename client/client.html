@@ -7,108 +7,132 @@
   <link rel="icon" href="../data/poke-ball.png">
   <link rel="icon" href="/favicon.ico" sizes="any">
 
+  <!-- <script src="client.js"> -->
   <script>
     // use this for response box setting, handling post/get/head
-    const handleResponse = async (response, parseJSON) => {
-      const content = document.querySelector('#content');
+    const handleResponse = async (response, parseJSON, form) => {
+      // const content = form.querySelector('#result'); // set .value
+      const content = form.querySelector('#result'); // set .innerHTML
+      const method = form.getAttribute('method');
 
-      // switch (response.status) {
-      //   case 200:
-      //     content.innerHTML = '<b>Success</b>';
-      //     break;
-      //   case 201:
-      //     content.innerHTML = '<b>Created</b>';
-      //     break;
-      //   case 204:
-      //     content.innerHTML = '<b>Updated (No Content)</b>';
-      //     return;
-      //   case 400:
-      //     content.innerHTML = '<b>Bad Request</b>';
-      //     break;
-      //   case 404:
-      //     content.innerHTML = '<b>Not Found</b>';
-      //     break;
-      //   default:
-      //     content.innerHTML = 'Error code not implemented by client.';
-      //     break;
-      // }
-
-
-      // manage head/get, post here - not so sure about that anymore
-      // display your results here - set result.innerHTML
-
-
-      // HEAD responses have no body, so don't try to parse them.
-      if (!parseJSON) return;
+      console.log(content);
+      console.log(method.toUpperCase());
 
       const obj = await response.json();
       console.log(obj);
+      console.log(obj.message);
 
+
+      switch (method.toUpperCase()) {
+        case 'GET' || 'POST':
+          content.innerHTML =
+            `Status: ${obj.status}<br>
+          Content-Length: ${obj.contentLength}<br>
+          Message: ${JSON.stringify(obj.message)}`;
+          break;
+        case 'HEAD':
+          content.innerHTML = `Status: ${obj.status}`;
+          break;
+        default:
+          content.innerHTML = 'Error. Code: 501 (not implemented) id: handleResponseDefault';
+      }
+
+      /* -------- Old Stuff -----------------
+      
+      // manage head/get, post here - not so sure about that anymore
+      // display your results here - set result.innerHTML
+      
+      // response.method === 'GET'
+      
+      
+      
+      
+      // HEAD responses have no body, so don't try to parse them.
+      if (!parseJSON) return;
+      
+      const obj = await response.json();
+      console.log(obj);
+      
       if (obj.message) {
         content.innerHTML += `<p>Message: ${obj.message}</p>`;
       } else if (obj.users) {
         content.innerHTML += `<p>${JSON.stringify(obj.users)}</p>`;
       }
+      */
     };
 
-    // POST from the "Add User" form
-    const sendPost = async (nameForm) => {
-      const url = nameForm.getAttribute('action');
-      const method = nameForm.getAttribute('method'); // PIN this is setting the METHOD!
+    // ------------ POST requests --------------------------------------
+    const postHandler = async (form) => {
+      console.log('sending post');
 
-      const name = nameForm.querySelector('#nameField').value;
-      const age = nameForm.querySelector('#ageField').value;
+      const url = form.getAttribute('action');
 
-      const formData = `name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}`;
+      // const name = nameForm.querySelector('#nameField').value;
+      // const age = nameForm.querySelector('#ageField').value;
+
+      // const formData = `name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}`;
+      const test = `test`;
 
       const response = await fetch(url, {
-        method,
+        method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
         },
-        body: formData,
+        body: test,
       });
 
       handleResponse(response, true);
     };
 
-    // GET/HEAD from the "Get User" form
-    const requestUpdate = async (userForm) => {
-      const url = userForm.querySelector('#urlField').value;
-      const method = userForm.querySelector('#methodSelect').value.toUpperCase();
-      // make method a GET HEAD radio select
+    
+    // ------------- GET/HEAD requests -------------------------------
+    const getHandler = async (form) => {
+      console.log('retrieving get');
 
+      // winning url:
+      const url = form.getAttribute('action'); // form.action is the whole url incl local address
+      // winning method:
+      const method = form.querySelector('#methodSelect').value.toUpperCase();
+
+      // test URL
       const response = await fetch(url, {
         method,
         headers: { Accept: 'application/json' },
       });
 
-      handleResponse(response, method !== 'HEAD');
-
-      // btw try and send these using request.query instead of request.body - is that possible? how do I handle .body?
+      handleResponse(response, method !== 'HEAD', form); // passes t/f of conditional as boolean param parseJSON
     };
 
-    // adds event listeners to buttons
-    // prevents default behavior using .preventDefault()
-    const init = () => {
-      const nameForm = document.querySelector('#nameForm');
-      const userForm = document.querySelector('#userForm');
 
-      nameForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        sendPost(nameForm);
-        return false;
-      });
+    const findMethod = (form) => {
+      const method = form.getAttribute('method');
 
-      userForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        requestUpdate(userForm);
-        return false;
+      // pass the whole thing to the right handler
+      if(form.method.toUpperCase() === 'GET'){
+        getHandler(form);
+      } else {
+        postHandler(form);
+      }
+    };
+
+
+
+    // adds same event listener to all FORMS, not buttons
+    // prevents 'submit' default behavior using .preventDefault()
+    const init = () => {      
+      const forms = document.querySelectorAll('form');
+      // console.log("forms found:", forms, forms[0].id);
+
+      forms.forEach((form) => {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault(); // if using 'submit'
+          findMethod(e.target);
+        });
       });
     };
 
-    // window.onload = init;
+    window.onload = init;
   </script>
 </head>
 
@@ -119,21 +143,25 @@
     <a href="docs">Read the Documentation</a>
     <br>
     <br>
-    <section>
+    <section id="get-requests">
       <h3>/getAllPokemon</h3>
-      <form id="getAllPokemonForm">
-        <input type="radio" id="get" name="methodSelect" value="GET" checked/>
-          <label for="get">GET</label>
-        <input type="radio" id="head" name="methodSelect" value="HEAD"/>
-          <label for="head">HEAD</label>
-        <button type="submit" style="margin-left: 15px;">Go</button><br>
-        <input type="text" id="result" style="margin-top: 15px;" readonly/>
-        <!-- difference from  <input type="submit" value="Get User"/>  ??  -->
-        <!-- purpose of select tag wrapping? -->
+      <form id="getAllPokemonForm" action="/getAllPokemon" method="get">
+        <select id="methodSelect">
+          <option value="get">GET</option>
+          <option value="head">HEAD</option>
+        </select>
+        <button type="submit">Go</button><br>
+        <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
+        <div id="result" aria-disabled="true" role="textbox"></div>
+      </form>
+      <h3>/searchSinglePokemon</h3>
+      <form id="searchSinglePokemonForm" action="/searchSinglePokemon" method="get">
+        <input type="text" id="nameBox"/>
+        <button type="submit">Go</button><br>
+        <div id="result" aria-disabled="true" role="textbox"></div>
       </form>
     </section>
 
-    <p>/getAllPokemon</p>
     <p>/getPokemonNames</p>
     <p>/searchAllPokemon</p>
     <p>/searchSinglePokemon</p>

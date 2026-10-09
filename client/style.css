@@ -25,11 +25,13 @@ html, body {
 
 /* scale standard buttons */
 button, 
-.button-class {
+.button-class,
+select {
   font-size: 1rem; /* inherits updated root font sizes */
   padding: 0.2em 0.5em; /* vert-hor; em makes padding scale w text */
   border-radius: 5px; /* accidentally made a weird little outline thing */
 }
+button { margin-left: 15px; }
 
 /* radio button labels - and other labels maybe */
 label {
@@ -47,4 +49,29 @@ input[type="radio"] {
   width: 1rem;
   height: 1rem;
   vertical-align: middle; /* keep circle aligned with text */
+}
+
+/* target output text boxes ONLY */
+/* divs with id=result */
+div#result {
+  /* size and display settings */
+  display: inline-block;
+  box-sizing: border-box;
+  width: 75%;
+  min-height: 1.5em;
+  max-height: 20em;
+  margin-top: 15px;
+
+  /* text formatting */
+  font-family:'Courier New', Courier, monospace;
+  font-size: .8rem;
+  overflow-wrap: break-word;  /* disallow x-overflow */
+  overflow-y: hidden;          /* cuts off y-overflow */
+  /* text-overflow: ellipsis;   adds '...' if text is too long */
+
+  
+  /* boxy things */
+  background-color: #f4f4f4; /* default disabled input background */
+  border: 1px inset #4b4b4b; /* 767676 - inset = cool thing from earlier */
+  border-radius: 5px;
 }
