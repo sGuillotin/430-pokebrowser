@@ -88,7 +88,7 @@ const getPokemonNames = (request, response) => {
   } else {
     result = pokemon.filter(p => p); // shallow copy pokemon + remove falsy elements
     // note: renaming Pikachu will still modify pokemon, since it's a shallow copy
-    
+
       // type
       // .filter(p => p.type.includes("Fire")) // works
       if(request.query.type){
@@ -125,9 +125,49 @@ const getPokemonNames = (request, response) => {
 // sends full objects
 // filter by type, weaknesses
 const searchAllPokemon = (request, response) => {
+  let result;
+
+  if (!request.query.type && !request.query.weakness) {
+    result = pokemon.map(p => p.name); // just get the names
+  } else {
+    result = pokemon.filter(p => p); // shallow copy pokemon + remove falsy elements
+    // note: renaming Pikachu will still modify pokemon, since it's a shallow copy
+
+      // type
+      // .filter(p => p.type.includes("Fire")) // works
+      if(request.query.type){
+        result = result.filter(p => p.type.includes(request.query.type));
+        // enter as ?type=Fire
+        // make case-insensitive using regex?
+        console.log("type filtered");
+      }
+
+      // weakness
+      if(request.query.weakness){
+        result = result.filter(p => p.weaknesses.includes(request.query.weakness));
+        // &weakness=Water
+        console.log(`${request.query.weakness} weakness filtered`);
+      } else if(startsWithNot.test(request.query.weakness)){
+        result = result.filter(p => !p.weaknesses.includes(request.query.weakness));
+        console.log("!weakness filtered");
+      }
+
+    // return full objects - no name mapping here
+    // simplify the output objects + rearrange id
+    result = result.map(p => ({
+      name: p.name,
+      id: p.id,
+      type: p.type,
+      weaknesses: p.weaknesses,
+      height: p.height,
+      weight: p.weight,
+    }));
+  }
+
   respondJSON(request, response, 200, {
-    message: "sorry, this method is not yet available. please return soon!",
-    id: "notImplemented"
+    status: 200,
+    contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
+    message: result
   });
 };
 
@@ -137,9 +177,12 @@ const searchSinglePokemon = (request, response) => {
 
   let result;
 
+  console.log("searching single", request.query.name);
+
   if (!request.query.name) {
     // return 400, no name provided!
-    respondJSON(request, response, 400, {
+    return respondJSON(request, response, 400, {
+      status: 400,
       message: "Please enter a name.",
       id: "noName"
     });
@@ -147,7 +190,28 @@ const searchSinglePokemon = (request, response) => {
     // search by name for full pokemon object
     result = pokemon
       .filter(p => p.name === request.query.name);
+
+    // handle result = nothing (no matches) here
+    if(!result || result.length === 0){
+      return respondJSON(request, response, 400, {
+        status: 400,
+        message: "no matches found. Please try again and use the format 'Name'",
+        id: "noMatchFound"
+      });
+    }
   }
+
+  // simplify the output objects + rearrange id
+  result = result.map(p => ({
+    name: p.name,
+    id: p.id,
+    type: p.type,
+    weaknesses: p.weaknesses,
+    height: p.height,
+    weight: p.weight,
+    'next-evolution': p.next_evolution
+  }));
+
 
   respondJSON(request, response, 200, {
     status: 200,
@@ -160,9 +224,15 @@ const searchSinglePokemon = (request, response) => {
 // ---------- POST requests --------------------------
 const addPokemon = (request, response) => {
   respondJSON(request, response, 501, {
+    status: 501,
     message: "this method is not yet available. please return soon to create your own pokemon.",
     id: "notImplemented"
   });
+
+  // 1 - check if name exists
+  // just check in data or use searchSinglePokemon?
+
+  // 2 - create entry
 
   /*
   const { name, age } = request.body;
@@ -197,11 +267,17 @@ const addPokemon = (request, response) => {
 // modify by name
 const modifyPokemon = (request, response) => {
   respondJSON(request, response, 501, {
+    status: 501,
     message: "this method is not yet available. please return soon!",
     id: "notImplemented"
   });
 
   // post request idk pokemon[request.name] = { request.body }
+
+  // 1 - check if name exists
+  // searchSinglePokemon.response.status === 200
+
+  // 2 - edit pokemon obj
 };
 
 module.exports = {

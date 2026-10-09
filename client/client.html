@@ -15,7 +15,7 @@
       const content = form.querySelector('#result'); // set .innerHTML
       const method = form.getAttribute('method');
 
-      console.log(content);
+      // console.log("outputting to content", content);
       console.log(method.toUpperCase());
 
       // update the first part of our response no matter what
@@ -30,10 +30,10 @@
 
       switch (method.toUpperCase()) {
         case 'GET' || 'POST':
-          content.innerHTML =
-            `Status: ${obj.status}<br>
-            Content-Length: ${obj.contentLength}<br>
-            Message: ${JSON.stringify(obj.message)}`;
+          content.innerHTML +=
+            `<br>${JSON.stringify(obj)}`;  // stretch: filter out ", join with ,+" "
+            // stretch - remove status at beginning - rest/destructuring?
+            // regex formatting - capitalize first char, space after every :, <br> at end of every line (obj attr)
           break;
         default:
           content.innerHTML = 'Error. Code: 501 (not implemented) id: handleResponseDefault';
@@ -68,14 +68,31 @@
     
     // ------------- GET/HEAD requests -------------------------------
     const getHandler = async (form) => {
-      const url = form.getAttribute('action'); // form.action is the whole url incl local address
+      const action = form.getAttribute('action'); // is /endpoint
       const method = form.querySelector('#methodSelect').value.toUpperCase();
+      let response;
       console.log('retrieving', method);
+      
+      // if we have input boxes, add them to url query params - handle bad inputs in jsonResponses
+      if(form.querySelector('#nameBox')) {
+        console.log("name box recognized", form.querySelector('#nameBox'));
+        const name = form.querySelector('#nameBox').value;
+        const url = `${action}?name=${encodeURIComponent(name)}`;
 
-      const response = await fetch(url, {
-        method,
-        headers: { Accept: 'application/json' },
-      });
+        console.log("url", url);
+
+        response = await fetch(url, {
+          method,
+          headers: { Accept: 'application/json' },
+        });
+      } else {
+        //fetch with no inputs
+        console.log("NO INPUTS RECEIVED");
+        response = await fetch(action, {
+          method,
+          headers: { Accept: 'application/json' },
+        });
+      }
 
       handleResponse(response, method !== 'HEAD', form); // passes t/f of conditional as boolean param parseJSON
     };
@@ -132,6 +149,10 @@
       </form>
       <h3>/getPokemonNames</h3>
       <form id="getPokemonNamesForm" action="/getPokemonNames" method="get">
+        <label for="typeBox">Type:</label>
+        <input type="text" id="typeBox"/><br>
+        <label for="weaknessBox">Weakness:</label>
+        <input type="text" id="weaknessBox"/><br>
         <select id="methodSelect">
           <option value="get">GET</option>
           <option value="head">HEAD</option>
@@ -139,22 +160,37 @@
         <button type="submit">Go</button><br>
         <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
         <div id="result" aria-disabled="true" role="textbox"></div>
-      </form><h3>/searchSinglePokemon</h3>
+      </form>
+      <h3>/searchSinglePokemon</h3>
       <form id="searchSinglePokemonForm" action="/searchSinglePokemon" method="get">
-        <label for="nameBox">Name: </label>
+        <label for="nameBox">Name:</label>
         <input type="text" id="nameBox"/><br>
         <select id="methodSelect">
           <option value="get">GET</option>
           <option value="head">HEAD</option>
-        </select>      
+        </select>
+        <button type="submit">Go</button><br>
+        <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
+        <div id="result" aria-disabled="true" role="textbox"></div>
+      </form>
+      <h3>/searchAllPokemon</h3>
+      <form id="searchAllPokemonForm" action="/searchAllPokemon" method="get">
+        <label for="typeBox">Type:</label>
+        <input type="text" id="typeBox"/><br>
+        <label for="weaknessBox">Weakness:</label>
+        <input type="text" id="weaknessBox"/><br>
+        <select id="methodSelect">
+          <option value="get">GET</option>
+          <option value="head">HEAD</option>
+        </select>
         <button type="submit">Go</button><br>
         <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
         <div id="result" aria-disabled="true" role="textbox"></div>
       </form>
     </section>
 
-    <p>/searchAllPokemon</p>
     <p>/searchSinglePokemon</p>
+    <p>/searchAllPokemon</p>
     <p>/addPokemon</p>
     <p>/modifyPokemon</p>
 
