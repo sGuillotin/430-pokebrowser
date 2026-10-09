@@ -1,9 +1,9 @@
 html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
   font-size: 125%;  /* default 16px */
+}
+
+root {
+  margin: 15px;
 }
 
 #top {
@@ -13,12 +13,6 @@ html, body {
 
 #top h1 {
   font-size: 2em;
-}
-
-#content {
-  margin-top: 100px;
-  font-size: 2em;
-  text-align: center;
 }
 
 
@@ -33,15 +27,13 @@ select {
 }
 button { margin-left: 15px; }
 
-/* radio button labels - and other labels maybe */
-label {
-  font-size: 1rem;
-}
 
 /* all inputs - incl text output box (readonly input) */
 input {
+  font-size: 1rem;
   height: 1.25rem;
   border-radius: 5px; /* accidentally made a weird little outline thing */
+  margin: 15px;
 }
 
 /* actual radio circle size */
@@ -59,16 +51,16 @@ div#result {
   box-sizing: border-box;
   width: 75%;
   min-height: 1.5em;
-  max-height: 20em;
+  max-height: 20rem;
   margin-top: 15px;
 
   /* text formatting */
   font-family:'Courier New', Courier, monospace;
   font-size: .8rem;
+  padding: 5px; /* vert-hor */
   overflow-wrap: break-word;  /* disallow x-overflow */
   overflow-y: hidden;          /* cuts off y-overflow */
   /* text-overflow: ellipsis;   adds '...' if text is too long */
-
   
   /* boxy things */
   background-color: #f4f4f4; /* default disabled input background */

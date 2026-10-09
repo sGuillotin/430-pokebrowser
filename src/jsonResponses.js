@@ -81,14 +81,14 @@ const getPokemonNames = (request, response) => {
   // 1 - filter the data
   // 2 - return names
 
-  let result = pokemon.filter(p => p); // shallow copy pokemon
+  let result;
 
   if (!request.query.type && !request.query.weakness) {
-    result = pokemon
-      .map(p => p.name)
-    ;
+    result = pokemon.map(p => p.name); // just get the names
   } else {
-    result = pokemon;
+    result = pokemon.filter(p => p); // shallow copy pokemon + remove falsy elements
+    // note: renaming Pikachu will still modify pokemon, since it's a shallow copy
+    
       // type
       // .filter(p => p.type.includes("Fire")) // works
       if(request.query.type){
