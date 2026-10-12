@@ -73,7 +73,9 @@
       let response;
       console.log('retrieving', method);
       
-      // if we have input boxes, add them to url query params - handle bad inputs in jsonResponses
+      // if we have input boxes
+      // add them to url query params
+      // - handle bad inputs in jsonResponses
       if(form.querySelector('#nameBox')) {
         console.log("name box recognized", form.querySelector('#nameBox'));
         const name = form.querySelector('#nameBox').value;
@@ -85,6 +87,24 @@
           method,
           headers: { Accept: 'application/json' },
         });
+        // if we have a type and a weakness box
+      } else if(form.querySelector('#typeBox') && form.querySelector('#weaknessBox')){
+        console.log("CACKAAAAWWW");
+        console.log("type", form.querySelector('#typeBox').value);
+        console.log("weakness", form.querySelector('#weaknessBox').value);
+
+        const type = form.querySelector('#typeBox').value;
+        const weakness = form.querySelector('#weaknessBox').value;
+        const url = `${action}?type=${encodeURIComponent(type)}&weakness=${encodeURIComponent(weakness)}`;
+        // handle cases here potentially (if no type, etc) - Sam did in JSONresponses
+
+        console.log("url", url);
+
+        response = await fetch(url, {
+          method,
+          headers: { Accept: 'application/json' },
+        });
+
       } else {
         //fetch with no inputs
         console.log("NO INPUTS RECEIVED");

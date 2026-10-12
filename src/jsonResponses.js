@@ -42,21 +42,31 @@ const badJSON = (request, response) => {
   });
 };
 
-
-// ----------- Endpoints -----------------------------
-// get all pokemon
-// full objects - tweaked
-// no filtering
-const getAllPokemon = (request, response) => {
-  const result = pokemon
-  .map(p => ({
+// ------------- Endpoint helper methods -----------
+/**
+ * simplifies incoming pokemon object(s), rearranges a little, removes img attr
+ * @param {*} result JSON object
+ * @returns 
+ */
+const simplifyPokeObj = (result) => {
+  return result.map(p => ({
     name: p.name,
     id: p.id,
     type: p.type,
     weaknesses: p.weaknesses,
     height: p.height,
     weight: p.weight,
+    'next-evolution': p.next_evolution
   }));
+}
+
+// ----------- Endpoints -----------------------------
+// get all pokemon
+// full objects - tweaked
+// no filtering
+const getAllPokemon = (request, response) => {
+  // simplify the output object(s) + rearrange id
+  result = simplifyPokeObj(result);
 
   respondJSON(request, response, 200, {
     status: 200,
@@ -112,8 +122,6 @@ const getPokemonNames = (request, response) => {
       result = result.map(p => p.name);
   }
 
-  // console.log(pokemon);
-
   respondJSON(request, response, 200, {
     status: 200,
     contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
@@ -152,16 +160,8 @@ const searchAllPokemon = (request, response) => {
         console.log("!weakness filtered");
       }
 
-    // return full objects - no name mapping here
-    // simplify the output objects + rearrange id
-    result = result.map(p => ({
-      name: p.name,
-      id: p.id,
-      type: p.type,
-      weaknesses: p.weaknesses,
-      height: p.height,
-      weight: p.weight,
-    }));
+    // simplify the output object(s) + rearrange id
+    result = simplifyPokeObj(result);
   }
 
   respondJSON(request, response, 200, {
@@ -201,17 +201,8 @@ const searchSinglePokemon = (request, response) => {
     }
   }
 
-  // simplify the output objects + rearrange id
-  result = result.map(p => ({
-    name: p.name,
-    id: p.id,
-    type: p.type,
-    weaknesses: p.weaknesses,
-    height: p.height,
-    weight: p.weight,
-    'next-evolution': p.next_evolution
-  }));
-
+  // simplify the output object(s) + rearrange id
+  result = simplifyPokeObj(result);
 
   respondJSON(request, response, 200, {
     status: 200,
