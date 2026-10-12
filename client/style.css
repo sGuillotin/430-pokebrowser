@@ -1,21 +1,17 @@
 html, body {
   font-size: 125%;  /* default 16px */
+  text-align: center;
+  margin: 0 auto;
 }
 
 root {
   margin: 15px;
 }
 
-#top {
-  text-align: center;
-  margin: 0 auto;
+h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
 }
-
-#top h1 {
-  font-size: 2em;
-}
-
-
 
 /* scale standard buttons */
 button, 

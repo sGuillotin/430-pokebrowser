@@ -66,7 +66,8 @@ const simplifyPokeObj = (result) => {
 // no filtering
 const getAllPokemon = (request, response) => {
   // simplify the output object(s) + rearrange id
-  result = simplifyPokeObj(result);
+  // reformat and simplify entire pokemon obj
+  const result = simplifyPokeObj(pokemon);
 
   respondJSON(request, response, 200, {
     status: 200,

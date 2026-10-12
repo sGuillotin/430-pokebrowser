@@ -108,6 +108,8 @@
       } else {
         //fetch with no inputs
         console.log("NO INPUTS RECEIVED");
+        console.log("action", action, "method", method);
+
         response = await fetch(action, {
           method,
           headers: { Accept: 'application/json' },
@@ -149,72 +151,71 @@
   </script>
 </head>
 
-<body>
-  <section id="top">
-    <h1>Pokemon API Browser</h1>
-    <p><i>Gen 1 Pokedex</i></p>
-    <a href="docs">Read the Documentation</a>
-    <br>
-    <br>
-    <section id="get-requests">
-      <h3>/getAllPokemon</h3>
-      <form id="getAllPokemonForm" action="/getAllPokemon" method="get">
-        <select id="methodSelect">
-          <option value="get">GET</option>
-          <option value="head">HEAD</option>
-        </select>
-        <button type="submit">Go</button><br>
-        <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
-        <div id="result" aria-disabled="true" role="textbox"></div>
-      </form>
-      <h3>/getPokemonNames</h3>
-      <form id="getPokemonNamesForm" action="/getPokemonNames" method="get">
-        <label for="typeBox">Type:</label>
-        <input type="text" id="typeBox"/><br>
-        <label for="weaknessBox">Weakness:</label>
-        <input type="text" id="weaknessBox"/><br>
-        <select id="methodSelect">
-          <option value="get">GET</option>
-          <option value="head">HEAD</option>
-        </select>
-        <button type="submit">Go</button><br>
-        <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
-        <div id="result" aria-disabled="true" role="textbox"></div>
-      </form>
-      <h3>/searchSinglePokemon</h3>
-      <form id="searchSinglePokemonForm" action="/searchSinglePokemon" method="get">
-        <label for="nameBox">Name:</label>
-        <input type="text" id="nameBox"/><br>
-        <select id="methodSelect">
-          <option value="get">GET</option>
-          <option value="head">HEAD</option>
-        </select>
-        <button type="submit">Go</button><br>
-        <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
-        <div id="result" aria-disabled="true" role="textbox"></div>
-      </form>
-      <h3>/searchAllPokemon</h3>
-      <form id="searchAllPokemonForm" action="/searchAllPokemon" method="get">
-        <label for="typeBox">Type:</label>
-        <input type="text" id="typeBox"/><br>
-        <label for="weaknessBox">Weakness:</label>
-        <input type="text" id="weaknessBox"/><br>
-        <select id="methodSelect">
-          <option value="get">GET</option>
-          <option value="head">HEAD</option>
-        </select>
-        <button type="submit">Go</button><br>
-        <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
-        <div id="result" aria-disabled="true" role="textbox"></div>
-      </form>
-    </section>
+<body><section id="top">
+  <h1>Pokemon API Browser</h1>
+  <p><i>Gen 1 Pokedex</i></p>
+  <a href="docs">Read the Documentation</a>
+</section>
+<br>
+<section id="get-requests">
+  <h3>/getAllPokemon</h3>
+  <form id="getAllPokemonForm" action="/getAllPokemon" method="get">
+    <select id="methodSelect">
+      <option value="get">GET</option>
+      <option value="head">HEAD</option>
+    </select>
+    <button type="submit">Go</button><br>
+    <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
+    <div id="result" aria-disabled="true" role="textbox"></div>
+  </form>
+  <h3>/searchSinglePokemon</h3>
+  <form id="searchSinglePokemonForm" action="/searchSinglePokemon" method="get">
+    <label for="nameBox">Name:</label>
+    <input type="text" id="nameBox" /><br>
+    <select id="methodSelect">
+      <option value="get">GET</option>
+      <option value="head">HEAD</option>
+    </select>
+    <button type="submit">Go</button><br>
+    <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
+    <div id="result" aria-disabled="true" role="textbox"></div>
+  </form>
+  <h3>/getPokemonNames</h3>
+  <form id="getPokemonNamesForm" action="/getPokemonNames" method="get">
+    <label for="typeBox">Type:</label>
+    <input type="text" id="typeBox" /><br>
+    <label for="weaknessBox">Weakness:</label>
+    <input type="text" id="weaknessBox" /><br>
+    <select id="methodSelect">
+      <option value="get">GET</option>
+      <option value="head">HEAD</option>
+    </select>
+    <button type="submit">Go</button><br>
+    <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
+    <div id="result" aria-disabled="true" role="textbox"></div>
+  </form>
+  <h3>/searchAllPokemon</h3>
+  <form id="searchAllPokemonForm" action="/searchAllPokemon" method="get">
+    <label for="typeBox">Type:</label>
+    <input type="text" id="typeBox" /><br>
+    <label for="weaknessBox">Weakness:</label>
+    <input type="text" id="weaknessBox" /><br>
+    <select id="methodSelect">
+      <option value="get">GET</option>
+      <option value="head">HEAD</option>
+    </select>
+    <button type="submit">Go</button><br>
+    <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
+    <div id="result" aria-disabled="true" role="textbox"></div>
+  </form>
+</section>
 
-    <p>/searchSinglePokemon</p>
-    <p>/searchAllPokemon</p>
-    <p>/addPokemon</p>
-    <p>/modifyPokemon</p>
+<p>/searchSinglePokemon</p>
+<p>/searchAllPokemon</p>
+<p>/addPokemon</p>
+<p>/modifyPokemon</p>
 
-    <!--
+  <!--
     <form id="nameForm" action="/addUser" method="post">
       <label for="name">Name: </label>
       <input id="nameField" type="text" name="name" />
@@ -234,12 +235,7 @@
       </select>
       <input type="submit" value="Get User" />
     </form>
-    -->
-  </section>
-
-  <section id="content">
-  </section>
-
+  -->
 </body>
 
 </html>
