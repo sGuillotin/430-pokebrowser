@@ -221,10 +221,21 @@ const addPokemon = (request, response) => {
     id: "notImplemented"
   });
 
+  console.log(request.body);
+
   // 1 - check if name exists
   // just check in data or use searchSinglePokemon?
 
   // 2 - create entry
+
+    // name: p.name,
+    // id: p.id,
+    // type: p.type,
+    // weaknesses: p.weaknesses,
+    // height: p.height,
+    // weight: p.weight,
+
+    // height as "X m"   weight as "Y kg"
 
   /*
   const { name, age } = request.body;

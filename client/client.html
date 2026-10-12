@@ -29,7 +29,9 @@
       console.log(obj);
 
       switch (method.toUpperCase()) {
-        case 'GET' || 'POST':
+        // this is apparently how to do 'GET' || 'POST' with a switch case
+        case 'GET':
+        case 'POST':
           content.innerHTML +=
             `<br>${JSON.stringify(obj)}`;  // stretch: filter out ", join with ,+" "
             // stretch - remove status at beginning - rest/destructuring?
@@ -44,12 +46,19 @@
     // ------------ POST requests --------------------------------------
     const postHandler = async (form) => {
       console.log('sending post');
+      const url = form.getAttribute('action'); // is /endpoint
 
-      const url = form.getAttribute('action');
-
-      // const name = nameForm.querySelector('#nameField').value;
+      const name = form.querySelector('#nameBox').value;
+      const id = form.querySelector('#nameBox').value;
+      console.log("name", name, "id", id);
+      
+      const bodyData = {
+        name: form.querySelector('#nameBox').value,
+        id: form.querySelector('#idBox').value
+      }
+      
+      // send as body, or should I encode?
       // const age = nameForm.querySelector('#ageField').value;
-
       // const formData = `name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}`;
       const test = `test`;
 
@@ -59,7 +68,7 @@
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
         },
-        body: test,
+        body: bodyData,
       });
 
       handleResponse(response, true, form);
@@ -132,7 +141,6 @@
     };
 
 
-
     // adds same event listener to all FORMS, not buttons
     // prevents 'submit' default behavior using .preventDefault()
     const init = () => {      
@@ -158,6 +166,9 @@
 </section>
 <br>
 <section id="get-requests">
+  <!-- these are divs as a readonly output text box, with some semantic html explanation for screen readers -->
+  <!-- <div id="result" aria-disabled="true" role="textbox"></div> -->
+  <!--
   <h3>/getAllPokemon</h3>
   <form id="getAllPokemonForm" action="/getAllPokemon" method="get">
     <select id="methodSelect">
@@ -165,7 +176,6 @@
       <option value="head">HEAD</option>
     </select>
     <button type="submit">Go</button><br>
-    <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
     <div id="result" aria-disabled="true" role="textbox"></div>
   </form>
   <h3>/searchSinglePokemon</h3>
@@ -177,7 +187,6 @@
       <option value="head">HEAD</option>
     </select>
     <button type="submit">Go</button><br>
-    <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
     <div id="result" aria-disabled="true" role="textbox"></div>
   </form>
   <h3>/getPokemonNames</h3>
@@ -191,7 +200,6 @@
       <option value="head">HEAD</option>
     </select>
     <button type="submit">Go</button><br>
-    <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
     <div id="result" aria-disabled="true" role="textbox"></div>
   </form>
   <h3>/searchAllPokemon</h3>
@@ -205,7 +213,26 @@
       <option value="head">HEAD</option>
     </select>
     <button type="submit">Go</button><br>
-    <!-- div as a readonly output text box, with some semantic html explanation for screen readers -->
+    <div id="result" aria-disabled="true" role="textbox"></div>
+  </form>
+  -->
+</section>
+<section id="post-requests">
+  <h3>/addPokemon</h3>
+  <form id="addPokemonForm" action="/addPokemon" method="post">
+    <label for="nameBox">Name:</label>
+    <input type="text" id="nameBox" />
+    <label for="idBox">ID:</label>
+    <input type="text" id="idBox" style="width: 50px;"/><br>
+    <label for="typeBox">Type:</label>
+    <input type="text" id="typeBox" style="width: 150px;"/>
+    <label for="weaknessBox">Weakness:</label>
+    <input type="text" id="weaknessBox" style="width: 150px;"/><br>
+    <label for="heightBox">Height:</label>
+    <input type="text" id="heightBox" style="width: 150px;"/>
+    <label for="weightBox">Weight:</label>
+    <input type="text" id="weightBox" style="width: 150px;"/><br>
+    <button type="submit">Go</button><br>
     <div id="result" aria-disabled="true" role="textbox"></div>
   </form>
 </section>
@@ -215,27 +242,5 @@
 <p>/addPokemon</p>
 <p>/modifyPokemon</p>
 
-  <!--
-    <form id="nameForm" action="/addUser" method="post">
-      <label for="name">Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="age">Age: </label>
-      <input id="ageField" type="number" name="age" min="0" max="100" step="1" />
-      <input type="submit" value="Add User" />
-    </form>
-
-    <form id="userForm" action="/getUsers" method="get">
-      <select id='urlField'>
-        <option value='/getUsers'>/getUsers</option>
-        <option value='/notReal'>/notReal</option>
-      </select>
-      <select id="methodSelect">
-        <option value="get">GET</option>
-        <option value="head">HEAD</option>
-      </select>
-      <input type="submit" value="Get User" />
-    </form>
-  -->
 </body>
-
 </html>
