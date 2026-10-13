@@ -3,7 +3,6 @@
 // PUT POKEDEX HERE!!
 const fs = require('fs');   // import filesystems module
 const pokemon = JSON.parse(fs.readFileSync(`${__dirname}/../data/pokedex.json`));
-// console.log("pokemon", pokemon);
 // regex for negating filters - may or may not use outside getPokemonNames
 const startsWithNot = /^!/;
 
@@ -199,7 +198,7 @@ const searchSinglePokemon = (request, response) => {
       return respondJSON(request, response, 400, {
         status: 400,
         message: "no matches found. Please try again and use the format 'Name'",
-        id: "noMatchFound"
+        id: "noSearchMatchFound"
       });
     }
   }
@@ -217,18 +216,28 @@ const searchSinglePokemon = (request, response) => {
 
 // ---------- POST requests --------------------------
 const addPokemon = (request, response) => {
+  // if no name or id
+  if(!request.body.name || !request.body.id){
+    return respondJSON(request, response, 400, {
+      status: 400,
+      message: "Please enter a Name and an ID to create your pokemon.",
+      id: 'noNameAndIDToCreate'
+    });
+  }
+
+
   console.log("name", request.body.name);
   console.log("id", request.body.id);
-
   // does the name already exist?
   // filter pokemon for name, see if length of result is 0
   const nameExists = pokemon.filter(p => p.name === request.body.name).length !== 0;
   const idExists = pokemon.filter(p => p.id == request.body.id).length !== 0;
 
+
   if(nameExists && idExists){
     return respondJSON(request, response, 400, {
       status: 400,
-      message: "Please choose your own ID and name.",
+      message: "This Name and ID are already in use. Please choose your own ID and name.",
       id: "pleasePickYourOwnIdName"
     });
   } else if(nameExists){
@@ -249,6 +258,7 @@ const addPokemon = (request, response) => {
 
   // add entry
   pokemon[request.body.id] = {
+    // id: request.body.id ? request.body.id : pokemon.length,
     id: request.body.id,
     name: request.body.name,
     type: request.body.type,
@@ -258,7 +268,10 @@ const addPokemon = (request, response) => {
   };
 
   // respondJSON( 201 Created ) blah blah
-
+  respondJSON(request, response, 201, {
+    status: 201,
+    message: `Pokemon created! ${pokemon[request.body.id]}`
+  })
 
 
 
@@ -328,18 +341,48 @@ const addPokemon = (request, response) => {
 
 // modify by name
 const modifyPokemon = (request, response) => {
-  respondJSON(request, response, 501, {
-    status: 501,
-    message: "this method is not yet available. please return soon!",
-    id: "notImplemented"
-  });
 
-  // post request idk pokemon[request.name] = { request.body }
-
+  console.log("Modifying:", request.body.name);
+  const nameExists = pokemon.filter(p => p.name === request.body.name).length !== 0;
+  
   // 1 - check if name exists
-  // searchSinglePokemon.response.status === 200
+  if(!nameExists){
+    return respondJSON(request, response, 400, {
+      status: 400,
+      message: "No matches found under that name. Please try again and use the format 'Name'",
+      id: 'noEditMatchFound'
+    });
+  }
 
-  // 2 - edit pokemon obj
+  // if no data
+  if(!request.body.id && !request.body.newName && !request.body.type && !request.body.height && !request.body.weight && !request.body.weakness){
+    return respondJSON(request, response, 400, {
+      status: 400,
+      message: "No data entered. Please enter at least one field to change.",
+      id: 'noNewData'
+    });
+  }
+  
+  // access match - find restructures(?) pokemon to be accessible
+  const match = pokemon.find(p => p.name === request.body.name);
+
+  // 2 - edit existing pokemon obj
+  // modify entry by index in pokemon array of objs (id)
+  // use ternary operators to fallback on defaults (attr: this ? condition : else)
+  pokemon[match.id - 1] = {
+    id: request.body.id ? Number(request.body.id) : match.id,
+    name: request.body.newName ? request.body.newName : match.name,
+    type: request.body.type ? request.body.type : match.type,
+    height: request.body.height ? request.body.height : match.height,
+    weight: request.body.weight ? request.body.weight : match.weight,
+    weaknesses: request.body.weakness ? request.body.weakness : match.weaknesses
+  };
+
+  // respondJSON( 201 Created ) blah blah
+  return respondJSON(request, response, 200, {
+    status: 200,
+    message: `Pokemon modified successfully: ${JSON.stringify(pokemon[match.id-1])}`
+  })
 };
 
 module.exports = {

@@ -47,13 +47,7 @@
     const postHandler = async (form) => {
       console.log('sending post');
       const url = form.getAttribute('action'); // /endpoint
-      
-      // const bodyData = {
-      //   name: form.querySelector('#nameBox').value,
-      //   id: form.querySelector('#idBox').value
-      // }
-      // console.log("bodyData", bodyData, "url", url);
-      
+            
       // send as body, or should I encode?
       // - if we set "C-Type" to "form encoded", we better encode it
       const name = form.querySelector('#nameBox').value;
@@ -63,7 +57,13 @@
       const height = form.querySelector('#heightBox').value;
       const weight = form.querySelector('#weightBox').value;
 
-      const formData = `name=${encodeURIComponent(name)}&id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}&weakness=${encodeURIComponent(weakness)}&height=${encodeURIComponent(height)}&weight=${encodeURIComponent(weight)}`;
+      let formData = `name=${encodeURIComponent(name)}&id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}&weakness=${encodeURIComponent(weakness)}&height=${encodeURIComponent(height)}&weight=${encodeURIComponent(weight)}`;
+
+      // if there's a new name box
+      if(form.querySelector('#newNameBox')) {
+        // add the data to formData
+        formData += `&newName=${encodeURIComponent(form.querySelector('#newNameBox').value)}`;
+      }
 
       const response = await fetch(url, {
         method: 'POST',
@@ -227,6 +227,25 @@
   <form id="addPokemonForm" action="/addPokemon" method="post">
     <label for="nameBox">Name:</label>
     <input type="text" id="nameBox" />
+    <label for="idBox">ID:</label>
+    <input type="text" id="idBox" style="width: 50px;"/><br>
+    <label for="typeBox">Type:</label>
+    <input type="text" id="typeBox" style="width: 150px;"/>
+    <label for="weaknessBox">Weakness:</label>
+    <input type="text" id="weaknessBox" style="width: 150px;"/><br>
+    <label for="heightBox">Height:</label>
+    <input type="text" id="heightBox" style="width: 150px;"/>
+    <label for="weightBox">Weight:</label>
+    <input type="text" id="weightBox" style="width: 150px;"/><br>
+    <button type="submit">Go</button><br>
+    <div id="result" aria-disabled="true" role="textbox"></div>
+  </form>
+  <h3>/modifyPokemon</h3>
+  <form id="modifyPokemonForm" action="/modifyPokemon" method="post">
+    <label for="nameBox">Name to Modify:</label>
+    <input type="text" id="nameBox" /><br>
+    <label for="newNameBox">New Name:</label>
+    <input type="text" id="newNameBox" />
     <label for="idBox">ID:</label>
     <input type="text" id="idBox" style="width: 50px;"/><br>
     <label for="typeBox">Type:</label>
