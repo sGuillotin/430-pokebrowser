@@ -46,21 +46,24 @@
     // ------------ POST requests --------------------------------------
     const postHandler = async (form) => {
       console.log('sending post');
-      const url = form.getAttribute('action'); // is /endpoint
-
-      const name = form.querySelector('#nameBox').value;
-      const id = form.querySelector('#nameBox').value;
-      console.log("name", name, "id", id);
+      const url = form.getAttribute('action'); // /endpoint
       
-      const bodyData = {
-        name: form.querySelector('#nameBox').value,
-        id: form.querySelector('#idBox').value
-      }
+      // const bodyData = {
+      //   name: form.querySelector('#nameBox').value,
+      //   id: form.querySelector('#idBox').value
+      // }
+      // console.log("bodyData", bodyData, "url", url);
       
       // send as body, or should I encode?
-      // const age = nameForm.querySelector('#ageField').value;
-      // const formData = `name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}`;
-      const test = `test`;
+      // - if we set "C-Type" to "form encoded", we better encode it
+      const name = form.querySelector('#nameBox').value;
+      const id = form.querySelector('#idBox').value;
+      const type = form.querySelector('#typeBox').value;
+      const weakness = form.querySelector('#weaknessBox').value;
+      const height = form.querySelector('#heightBox').value;
+      const weight = form.querySelector('#weightBox').value;
+
+      const formData = `name=${encodeURIComponent(name)}&id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}&weakness=${encodeURIComponent(weakness)}&height=${encodeURIComponent(height)}&weight=${encodeURIComponent(weight)}`;
 
       const response = await fetch(url, {
         method: 'POST',
@@ -68,7 +71,7 @@
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
         },
-        body: bodyData,
+        body: formData,
       });
 
       handleResponse(response, true, form);
@@ -178,6 +181,7 @@
     <button type="submit">Go</button><br>
     <div id="result" aria-disabled="true" role="textbox"></div>
   </form>
+  -->
   <h3>/searchSinglePokemon</h3>
   <form id="searchSinglePokemonForm" action="/searchSinglePokemon" method="get">
     <label for="nameBox">Name:</label>
@@ -189,6 +193,7 @@
     <button type="submit">Go</button><br>
     <div id="result" aria-disabled="true" role="textbox"></div>
   </form>
+  <!--
   <h3>/getPokemonNames</h3>
   <form id="getPokemonNamesForm" action="/getPokemonNames" method="get">
     <label for="typeBox">Type:</label>

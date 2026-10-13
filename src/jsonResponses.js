@@ -76,7 +76,8 @@ const getAllPokemon = (request, response) => {
   });
 };
 
-// get pokemon names only
+// search all pokemon
+// send names only
 // filter by type, weaknesses
 const getPokemonNames = (request, response) => {
   // how to check for queryparams if they come in via client form? pass via client?
@@ -94,8 +95,9 @@ const getPokemonNames = (request, response) => {
 
   let result;
 
+  // if no filters
   if (!request.query.type && !request.query.weakness) {
-    result = pokemon.map(p => p.name); // just get the names
+    result = pokemon.map(p => p.name); // return all names
   } else {
     result = pokemon.filter(p => p); // shallow copy pokemon + remove falsy elements
     // note: renaming Pikachu will still modify pokemon, since it's a shallow copy
@@ -205,7 +207,7 @@ const searchSinglePokemon = (request, response) => {
   // simplify the output object(s) + rearrange id
   result = simplifyPokeObj(result);
 
-  respondJSON(request, response, 200, {
+  return respondJSON(request, response, 200, {
     status: 200,
     contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
     message: result
@@ -215,13 +217,50 @@ const searchSinglePokemon = (request, response) => {
 
 // ---------- POST requests --------------------------
 const addPokemon = (request, response) => {
-  respondJSON(request, response, 501, {
-    status: 501,
-    message: "this method is not yet available. please return soon to create your own pokemon.",
-    id: "notImplemented"
-  });
+  console.log("name", request.body.name);
+  console.log("id", request.body.id);
 
-  console.log(request.body);
+  // does the name already exist?
+  // filter pokemon for name, see if length of result is 0
+  const nameExists = pokemon.filter(p => p.name === request.body.name).length !== 0;
+  const idExists = pokemon.filter(p => p.id == request.body.id).length !== 0;
+
+  if(nameExists && idExists){
+    return respondJSON(request, response, 400, {
+      status: 400,
+      message: "Please choose your own ID and name.",
+      id: "pleasePickYourOwnIdName"
+    });
+  } else if(nameExists){
+     return respondJSON(request, response, 400, {
+      status: 400,
+      message: "A pokemon by this name already exists. Please choose your own!",
+      id: "pickYourOwnName"
+    });
+  // check if id already exists
+  } else if(idExists){
+     return respondJSON(request, response, 400, {
+      status: 400,
+      message: "Another pokemon is already using this ID. Please choose your own!",
+      id: "pickYourOwnId"
+    });
+  }
+
+
+  // add entry
+  pokemon[request.body.id] = {
+    id: request.body.id,
+    name: request.body.name,
+    type: request.body.type,
+    height: request.body.height,
+    weight: request.body.weight,
+    weaknesses: request.body.weakness
+  };
+
+  // respondJSON( 201 Created ) blah blah
+
+
+
 
   // 1 - check if name exists
   // just check in data or use searchSinglePokemon?
@@ -236,6 +275,25 @@ const addPokemon = (request, response) => {
     // weight: p.weight,
 
     // height as "X m"   weight as "Y kg"
+
+
+    // "id": 1,
+    // "num": "001",
+    // "name": "Bulbasaur",
+    // "img": "http://www.serebii.net/pokemongo/pokemon/001.png",
+    // "type": [
+    //   "Grass",
+    //   "Poison"
+    // ],
+    // "height": "0.71 m",
+    // "weight": "6.9 kg",
+    // "weaknesses": [
+    //   "Fire",
+    //   "Ice",
+    //   "Flying",
+    //   "Psychic"
+    // ],
+
 
   /*
   const { name, age } = request.body;
@@ -252,7 +310,8 @@ const addPokemon = (request, response) => {
 
   let responseCode = 204;
 
-  if (!users[name]) {
+  //if dne, creates entry
+  if (!users[name]) { 
     responseCode = 201;
     users[name] = { name };
   }
