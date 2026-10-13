@@ -59,6 +59,57 @@ const simplifyPokeObj = (result) => {
   }));
 }
 
+/**
+ * respondJSON for simple 200, "message: result" scenarios
+ */
+const simpleSuccess = (request, response, result) => {
+  respondJSON(request, response, 200, {
+    status: 200,
+    contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
+    message: result
+  });
+}
+
+/**
+ * respondJSON for 400 requests
+ */
+const respond400 = (message, id, request, response) => {
+  respondJSON(request, response, 400, {
+    status: 400,
+    message: message,
+    id: id
+  });
+}
+
+// filter by type or weakness
+// const filterBy = (request, result, filterCat) => {
+//   if(request.query[filterCat]){
+//     console.log("filtered by", request.query[filterCat]);
+//     result = result.filter(p => p[filterCat].includes(request.query[filterCat]));
+//   }
+//   return result;
+// }
+
+// filter by type
+const filterType = (request, result) => {
+  if(request.query.type){
+    console.log("filtered by", request.query.type);
+    result = result.filter(p => p.type.includes(request.query.type));
+  }
+  return result;
+}
+
+// filter by weakness (separate function because of difference in weakness and weaknesses)
+const filterWeakness = (request, result) => {
+  if(request.query.weakness){
+    result = result.filter(p => p.weaknesses.includes(request.query.weakness));
+    console.log(`${request.query.weakness} weakness filtered`);
+  }
+  return result;
+}
+
+
+
 // ----------- Endpoints -----------------------------
 // get all pokemon
 // full objects - tweaked
@@ -68,26 +119,13 @@ const getAllPokemon = (request, response) => {
   // reformat and simplify entire pokemon obj
   const result = simplifyPokeObj(pokemon);
 
-  respondJSON(request, response, 200, {
-    status: 200,
-    contentLength: Buffer.byteLength(JSON.stringify(pokemon), 'utf8'),
-    message: result
-  });
+  simpleSuccess(request, response, result);
 };
 
 // search all pokemon
 // send names only
 // filter by type, weaknesses
 const getPokemonNames = (request, response) => {
-  // how to check for queryparams if they come in via client form? pass via client?
-  //   - (how to handle request.body?)
-  // Object.values is redundant, .entries() and .keys() do not work
-  // .includes`"${request.query.type}"` is repetitive :)
-
-
-  // check for bad data?
-  // guiding comment w regex for weaknesses list?
-  // set type filter to all as default value?
 
   // 1 - filter the data
   // 2 - return names
@@ -101,34 +139,22 @@ const getPokemonNames = (request, response) => {
     result = pokemon.filter(p => p); // shallow copy pokemon + remove falsy elements
     // note: renaming Pikachu will still modify pokemon, since it's a shallow copy
 
-      // type
-      // .filter(p => p.type.includes("Fire")) // works
-      if(request.query.type){
-        result = result.filter(p => p.type.includes(request.query.type));
-        // enter as ?type=Fire
-        // make case-insensitive using regex?
-        console.log("type filtered");
-      }
+      // type - ?type=Fire
+      result = filterType(request, result);
 
-      // weakness
-      if(request.query.weakness){
-        result = result.filter(p => p.weaknesses.includes(request.query.weakness));
-        // &weakness=Water
-        console.log(`${request.query.weakness} weakness filtered`);
-      } else if(startsWithNot.test(request.query.weakness)){
-        result = result.filter(p => !p.weaknesses.includes(request.query.weakness));
-        console.log("!weakness filtered");
-      }
+      // weakness - &weakness=Water
+      result = filterWeakness(request, result);
 
       // return names only
       result = result.map(p => p.name);
   }
 
-  respondJSON(request, response, 200, {
-    status: 200,
-    contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
-    message: result
-  });
+  if (!result || result.length === 0) {
+    respond400("No matches found. Please try again and use the format 'Element' for each box",
+      "noTypeWeaknessNamesFound", request, response);
+  } else {
+    simpleSuccess(request, response, result);
+  }
 };
 
 // search all pokemon
@@ -138,39 +164,29 @@ const searchAllPokemon = (request, response) => {
   let result;
 
   if (!request.query.type && !request.query.weakness) {
-    result = pokemon.map(p => p.name); // just get the names
+    return respond400("Please enter at least one type or weakness to filter by. For a list of all pokemon, please use /getAllPokemon.",
+      "noTypeFilterEntered", request, response);
   } else {
     result = pokemon.filter(p => p); // shallow copy pokemon + remove falsy elements
     // note: renaming Pikachu will still modify pokemon, since it's a shallow copy
 
-      // type
-      // .filter(p => p.type.includes("Fire")) // works
-      if(request.query.type){
-        result = result.filter(p => p.type.includes(request.query.type));
-        // enter as ?type=Fire
-        // make case-insensitive using regex?
-        console.log("type filtered");
-      }
+      // type - ?type=Fire
+      result = filterType(request, result);
 
-      // weakness
-      if(request.query.weakness){
-        result = result.filter(p => p.weaknesses.includes(request.query.weakness));
-        // &weakness=Water
-        console.log(`${request.query.weakness} weakness filtered`);
-      } else if(startsWithNot.test(request.query.weakness)){
-        result = result.filter(p => !p.weaknesses.includes(request.query.weakness));
-        console.log("!weakness filtered");
-      }
+      // weakness - &weakness=Water
+      result = filterWeakness(request, result);
 
     // simplify the output object(s) + rearrange id
     result = simplifyPokeObj(result);
   }
 
-  respondJSON(request, response, 200, {
-    status: 200,
-    contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
-    message: result
-  });
+  // if no results
+  if (!result || result.length === 0) {
+    respond400("No matches found. Please try again and use the format 'Element'",
+      "noTypeWeaknessMatchFound", request, response);
+  } else {
+    simpleSuccess(request, response, result);
+  }
 };
 
 // search single pokemon by name
@@ -183,34 +199,23 @@ const searchSinglePokemon = (request, response) => {
 
   if (!request.query.name) {
     // return 400, no name provided!
-    return respondJSON(request, response, 400, {
-      status: 400,
-      message: "Please enter a name.",
-      id: "noName"
-    });
+    return respond400("Please enter a name.", "noSearchName", request, response);
   } else {
     // search by name for full pokemon object
     result = pokemon
       .filter(p => p.name === request.query.name);
 
     // handle result = nothing (no matches) here
-    if(!result || result.length === 0){
-      return respondJSON(request, response, 400, {
-        status: 400,
-        message: "no matches found. Please try again and use the format 'Name'",
-        id: "noSearchMatchFound"
-      });
+    if (!result || result.length === 0) {
+      return respond400("No matches found. Please try again and use the format 'Name'",
+        "noNameFound", request, response);
     }
   }
 
   // simplify the output object(s) + rearrange id
   result = simplifyPokeObj(result);
 
-  return respondJSON(request, response, 200, {
-    status: 200,
-    contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
-    message: result
-  });
+  simpleSuccess(request, response, result);
 };
 
 
@@ -218,13 +223,9 @@ const searchSinglePokemon = (request, response) => {
 const addPokemon = (request, response) => {
   // if no name or id
   if(!request.body.name || !request.body.id){
-    return respondJSON(request, response, 400, {
-      status: 400,
-      message: "Please enter a Name and an ID to create your pokemon.",
-      id: 'noNameAndIDToCreate'
-    });
+    return respond400("Please enter a Name and an ID to create your pokemon.",
+      'noNameAndIDToCreate', request, response);
   }
-
 
   console.log("name", request.body.name);
   console.log("id", request.body.id);
@@ -235,30 +236,20 @@ const addPokemon = (request, response) => {
 
 
   if(nameExists && idExists){
-    return respondJSON(request, response, 400, {
-      status: 400,
-      message: "This Name and ID are already in use. Please choose your own ID and name.",
-      id: "pleasePickYourOwnIdName"
-    });
+    return respond400("This Name and ID are already in use. Please choose your own ID and name.",
+      "pleasePickYourOwnIdName", request, response);
   } else if(nameExists){
-     return respondJSON(request, response, 400, {
-      status: 400,
-      message: "A pokemon by this name already exists. Please choose your own!",
-      id: "pickYourOwnName"
-    });
+     return respond400("A pokemon by this name already exists. Please choose your own!",
+      "pickYourOwnName", request, response);
   // check if id already exists
   } else if(idExists){
-     return respondJSON(request, response, 400, {
-      status: 400,
-      message: "Another pokemon is already using this ID. Please choose your own!",
-      id: "pickYourOwnId"
-    });
+     return respond400("Another pokemon is already using this ID. Please choose your own!",
+      "pickYourOwnId", request, response);
   }
 
 
   // add entry
-  pokemon[request.body.id] = {
-    // id: request.body.id ? request.body.id : pokemon.length,
+  pokemon[request.body.id - 1] = {
     id: request.body.id,
     name: request.body.name,
     type: request.body.type,
@@ -270,7 +261,7 @@ const addPokemon = (request, response) => {
   // respondJSON( 201 Created ) blah blah
   respondJSON(request, response, 201, {
     status: 201,
-    message: `Pokemon created! ${pokemon[request.body.id]}`
+    message: `Pokemon created! ${pokemon[request.body.id - 1]}`
   })
 
 
@@ -306,37 +297,6 @@ const addPokemon = (request, response) => {
     //   "Flying",
     //   "Psychic"
     // ],
-
-
-  /*
-  const { name, age } = request.body;
-
-  const missingName = !name;
-  const missingAge = age === undefined || age === null || age === '';
-
-  if (missingName || missingAge) {
-    return respondJSON(request, response, 400, {
-      message: 'Name and age are both required.',
-      id: 'addPokemonMissingParams',
-    });
-  }
-
-  let responseCode = 204;
-
-  //if dne, creates entry
-  if (!users[name]) { 
-    responseCode = 201;
-    users[name] = { name };
-  }
-
-  users[name].age = age;
-
-  if (responseCode === 201) {
-    return respondJSON(request, response, 201, { message: 'Created Successfully' });
-  }
-
-  return respondJSON(request, response, 204, {}); // successful, no response
-  */
 };
 
 // modify by name
@@ -347,20 +307,14 @@ const modifyPokemon = (request, response) => {
   
   // 1 - check if name exists
   if(!nameExists){
-    return respondJSON(request, response, 400, {
-      status: 400,
-      message: "No matches found under that name. Please try again and use the format 'Name'",
-      id: 'noEditMatchFound'
-    });
+    return respond400("No matches found under that name. Please try again and use the format 'Name'",
+      "noEditMatchFound", request, response);
   }
 
-  // if no data
+  // 1b - check if no data
   if(!request.body.id && !request.body.newName && !request.body.type && !request.body.height && !request.body.weight && !request.body.weakness){
-    return respondJSON(request, response, 400, {
-      status: 400,
-      message: "No data entered. Please enter at least one field to change.",
-      id: 'noNewData'
-    });
+    return respond400("No data entered. Please enter at least one field to change.",
+      "noNewData", request, response);
   }
   
   // access match - find restructures(?) pokemon to be accessible

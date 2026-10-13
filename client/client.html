@@ -7,7 +7,6 @@
   <link rel="icon" href="../data/poke-ball.png">
   <link rel="icon" href="/favicon.ico" sizes="any">
 
-  <!-- <script src="client.js"> -->
   <script>
     // use this for response box setting, handling post/get/head
     const handleResponse = async (response, parseJSON, form) => {
@@ -160,7 +159,7 @@
 
     window.onload = init;
   </script>
-</head>
+  </head>
 
 <body><section id="top">
   <h1>Pokemon API Browser</h1>
@@ -171,7 +170,6 @@
 <section id="get-requests">
   <!-- these are divs as a readonly output text box, with some semantic html explanation for screen readers -->
   <!-- <div id="result" aria-disabled="true" role="textbox"></div> -->
-  <!--
   <h3>/getAllPokemon</h3>
   <form id="getAllPokemonForm" action="/getAllPokemon" method="get">
     <select id="methodSelect">
@@ -181,7 +179,6 @@
     <button type="submit">Go</button><br>
     <div id="result" aria-disabled="true" role="textbox"></div>
   </form>
-  -->
   <h3>/searchSinglePokemon</h3>
   <form id="searchSinglePokemonForm" action="/searchSinglePokemon" method="get">
     <label for="nameBox">Name:</label>
@@ -193,7 +190,6 @@
     <button type="submit">Go</button><br>
     <div id="result" aria-disabled="true" role="textbox"></div>
   </form>
-  <!--
   <h3>/getPokemonNames</h3>
   <form id="getPokemonNamesForm" action="/getPokemonNames" method="get">
     <label for="typeBox">Type:</label>
@@ -220,7 +216,6 @@
     <button type="submit">Go</button><br>
     <div id="result" aria-disabled="true" role="textbox"></div>
   </form>
-  -->
 </section>
 <section id="post-requests">
   <h3>/addPokemon</h3>
@@ -261,10 +256,6 @@
   </form>
 </section>
 
-<p>/searchSinglePokemon</p>
-<p>/searchAllPokemon</p>
-<p>/addPokemon</p>
-<p>/modifyPokemon</p>
-
 </body>
+
 </html>
