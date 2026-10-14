@@ -4,7 +4,7 @@
 const fs = require('fs');   // import filesystems module
 const pokemon = JSON.parse(fs.readFileSync(`${__dirname}/../data/pokedex.json`));
 // regex for negating filters - may or may not use outside getPokemonNames
-const startsWithNot = /^!/;
+// const startsWithNot = /^!/;
 
 
 // Sends a JSON response. HEAD requests and 204 responses get no body.
@@ -57,7 +57,7 @@ const simplifyPokeObj = (result) => {
     weight: p.weight,
     'next-evolution': p.next_evolution
   }));
-}
+};
 
 /**
  * respondJSON for simple 200, "message: result" scenarios
@@ -68,7 +68,7 @@ const simpleSuccess = (request, response, result) => {
     contentLength: Buffer.byteLength(JSON.stringify(result), 'utf8'),
     message: result
   });
-}
+};
 
 /**
  * respondJSON for 400 requests
@@ -79,7 +79,7 @@ const respond400 = (message, id, request, response) => {
     message: message,
     id: id
   });
-}
+};
 
 // filter by type or weakness
 // const filterBy = (request, result, filterCat) => {
@@ -97,7 +97,7 @@ const filterType = (request, result) => {
     result = result.filter(p => p.type.includes(request.query.type));
   }
   return result;
-}
+};
 
 // filter by weakness (separate function because of difference in weakness and weaknesses)
 const filterWeakness = (request, result) => {
@@ -106,7 +106,7 @@ const filterWeakness = (request, result) => {
     console.log(`${request.query.weakness} weakness filtered`);
   }
   return result;
-}
+};
 
 
 
@@ -261,7 +261,7 @@ const addPokemon = (request, response) => {
   // respondJSON( 201 Created ) blah blah
   respondJSON(request, response, 201, {
     status: 201,
-    message: `Pokemon created! ${pokemon[request.body.id - 1]}`
+    message: `Pokemon created! ${JSON.stringify(pokemon[request.body.id - 1])}`
   })
 
 

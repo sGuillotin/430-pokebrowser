@@ -39,13 +39,13 @@ input[type="radio"] {
   vertical-align: middle; /* keep circle aligned with text */
 }
 
-/* target output text boxes ONLY */
+/* target OUTPUT text boxes ONLY */
 /* divs with id=result */
 div#result {
   /* size and display settings */
   display: inline-block;
   box-sizing: border-box;
-  width: 75%;
+  width: 70%;
   min-height: 1.5em;
   max-height: 20rem;
   margin-top: 15px;
@@ -62,4 +62,38 @@ div#result {
   background-color: #f4f4f4; /* default disabled input background */
   border: 1.8px inset #767676; /* 767676 - inset = cool thing from earlier */
   border-radius: 5px;
+}
+
+
+
+
+/* forms outlines */
+section.bubble {
+  width: fit-content;
+  margin-inline: auto;
+  margin: 50px 10%;
+  margin-top: 0px;
+  padding: 0em 1em;
+  text-align: center;
+
+  background-color: #f4f4f4; /* default disabled input background */
+  border: 3px solid #767676; /* 767676 - inset = cool thing from earlier */
+  border-radius: 5px;
+}
+
+/* content inside forms formatting */
+section.bubble h4 {
+  text-align: left;
+}
+
+section.bubble p {
+  text-align: left;
+  margin-left: 1em;
+}
+
+mark {
+  color: #b7e5f8; /* Soft blue highlight */
+  background-color: #1d3557;            /* Dark text color */
+  border-radius: 5px;
+  padding: 2px 4px;
 }

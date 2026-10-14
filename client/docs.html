@@ -6,9 +6,6 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
   <link rel="icon" href="../data/poke-ball.png">
   <link rel="icon" href="/favicon.ico" sizes="any">
-
-  <script>
-  </script>
 </head>
 
 <body>
@@ -16,32 +13,95 @@
     <h1>Pokemon API Docs</h1>
     <p><i>Gen 1 Pokedex</i></p>
     <a href="/">Try it!</a>
-    <br>
-    <h2>Project Status</h2>
-    <p><b>Overall status:</b> implementing endpoints and writing documentation</p>
-    <br>
-    <h2>Milestone progress</h2>
-    <p>Endpoints are: <b>in progress!</b></p>
-    <p>Documentation page is: <b>in progress!</b></p>
-    <br>
-    <p>Server code is: <b>waiting</b></p>
-    <p>This page is: <b>waiting</b></p>
-    <p>Final Documentation page is: <b>waiting</b></p>
-    <p>CSS styling is: <b>waiting</b></p>
-    <br>
-    <h3>Endpoints open for business:</h3>
-    <p>/</p>
-    <p>/style.css</p>
-    <p>/getAllPokemon</p>
-    <p>/getPokemonNames - filtering options coming soon</p>
-    <p>/searchAllPokemon</p>
-    <p>/searchSinglePokemon</p>
-    <p>/addPokemon - coming soon</p>
-    <p>/modifyPokemon - coming soon</p>
-
   </section>
-
-  <section id="content">
+  <br>
+  <section class="bubble">
+    <h3>/getAllPokemon - GET/HEAD</h3>
+    <h4>Returns</h4>
+    <p>Stringified array of JSON pokemon objects with simplified and reorded attributes</p>
+    <p>Format: <mark>[ {name: string, id: number, type:[string], weaknesses:[string], height: string, weight: string, next-evolution:[{num: string, name: string}] } ]</mark></p>
+    <h4>Example</h4>
+    <p>Request: <mark>/getAllPokemon</mark></p>
+    <p>Response: <mark>[ {name: string, id: number, type:[string], weaknesses:[string], height: string, weight: string, next-evolution:[{num: string, name: string}] }, ...]</mark></p>
+  </section>
+  <section class="bubble">
+    <h3>/searchSinglePokemon - GET/HEAD</h3>
+    <h4>Query Params</h4>
+    <p>Pokemon <mark>name</mark></p>
+    <h4>Returns</h4>
+    <p>Stringified JSON pokemon object with simplified and reorded attributes</p>
+    <p>Format: <mark>{name: string, id: number, type:[string], weaknesses:[string], height: string, weight: string, next-evolution:[{num: string, name: string}] }</mark></p>
+    <h4>Examples</h4>
+    <p>Request: <mark>/searchSinglePokemon</mark><br>
+      Response: <mark>400 error - please enter a name</mark></p>
+    <p>Request: <mark>/searchSinglePokemon?name=Pikachu</mark><br>
+      Response: <mark>{name: 'Pikachu', id: '25', type:['Electric'], weaknesses:['Ground'], height: '0.41 m', weight: '6.0 kg', next-evolution:[{num: '026', name: 'Raichu'}] }</mark></p>
+  </section>
+  <section class="bubble">
+    <h3>/getPokemonNames - GET/HEAD</h3>
+    <h4>Query Params</h4>
+    <p>(optional) Pokemon <mark>types</mark> to filter by</p>
+    <p>(optional) Pokemon <mark>weaknesses</mark> to filter by</p>
+    <h4>Returns</h4>
+    <p>array[string] of Pokemon names</p>
+    <p>Format: <mark>[{name: string}]</mark></p>
+    <h4>Example</h4>
+    <p>Request: <mark>/getPokemonNames</mark></p>
+    <p>Response: <mark>[{name: string}, {name: string} ...]</mark></p>
+  </section>
+  <section class="bubble">
+    <h3>/searchAllPokemon - GET/HEAD</h3>
+    <h4>Query Params</h4>
+    <p>(optional) Pokemon <mark>types</mark> to filter by</p>
+    <p>(optional) Pokemon <mark>weaknesses</mark> to filter by</p>
+    <h4>Returns</h4>
+    <p>Stringified array of JSON pokemon objects with simplified and reorded attributes</p>
+    <p>Format: <mark>[ {name: string, id: number, type:[string], weaknesses:[string], height: string, weight: string, next-evolution:[{num: string, name: string}] } ]</mark></p>
+    <h4>Examples</h4>
+    <p>Request: <mark>/searchAllPokemon</mark><br>
+      Response: <mark>400 bad request - must enter at least one type or weakness</mark></p>
+    <p>Request: <mark>/searchAllPokemon?type=Fire</mark><br>
+      Response: <mark>[ {name: string, id: number, type:[string], weaknesses:[string], height: string, weight: string, next-evolution:[{num: string, name: string}] }, ...]</mark></p>
+  </section>
+  <section id="post-requests">
+    <section class="bubble">
+      <h3>/addPokemon - POST</h3>
+      <h4>Body Params</h4>
+      <p>Pokemon <mark>name</mark> - must be unique</p>
+      <p>Pokemon <mark>ID</mark> - must be unique</p>
+      <p>(optional) Pokemon <mark>type</mark></p>
+      <p>(optional) Pokemon <mark>weakness</mark></p>
+      <p>(optional) Pokemon <mark>height</mark></p>
+      <p>(optional) Pokemon <mark>weight</mark></p>
+      <h4>Returns</h4>
+      <p>Freshly created pokemon object with simplified and reorded attributes</p>
+      <p>Format: <mark>{ name: string, id: number, type:[string], weaknesses:[string], height: string, weight: string, next-evolution:[{num: string, name: string}] }</mark></p>
+      <h4>Example</h4>
+      <p>Request: <mark>/addPokemon</mark><br>
+        Body: {name: 'Raichu657', id: 1256 }<br>
+        Response: <mark>201 Created! Your new pokemon: { name: 'Raichu657', id: 1256, type:[''], weaknesses:[''], height: '', weight: '', next-evolution:[{num: '', name: ''}] }</mark></p>
+    </section>
+    <section class="bubble">
+      <h3>/modifyPokemon - POST</h3>
+      <h4>Body Params</h4>
+      <p>Pokemon <mark>name</mark> - used to find the existing pokemon</p>
+      <p>(optional) Pokemon <mark>new name</mark></p>
+      <p>(optional) Pokemon <mark>ID</mark></p>
+      <p>(optional) Pokemon <mark>type</mark></p>
+      <p>(optional) Pokemon <mark>weakness</mark></p>
+      <p>(optional) Pokemon <mark>height</mark></p>
+      <p>(optional) Pokemon <mark>weight</mark></p>
+      <p>At least one optional parameter must be entered (otherwise there will be no new data to add).<br>
+        All optional parameters default to pre-existing values if left blank.
+      </p>
+      <h4>Returns</h4>
+      <p>Freshly modified pokemon object with simplified and reorded attributes</p>
+      <p>Format: <mark>{ name: string, id: number, type:[string], weaknesses:[string], height: string, weight: string, next-evolution:[{num: string, name: string}] }</mark></p>
+      <h4>Example</h4>
+      <p>Request: <mark>/modifyPokemon</mark><br>
+        Body: {name: 'Pikachu', newName: 'Raichu657', id: 1256 }<br>
+        Response: <mark>200; Your modified pokemon: { name: Raichu657, id: 1256, ...OGPikachuData (see above for formatting) }</mark></p>
+    </section>
   </section>
 
 </body>
